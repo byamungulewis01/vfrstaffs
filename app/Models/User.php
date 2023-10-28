@@ -20,9 +20,20 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name',
-        'email',
+        'regnumber',
+        'username',
+        'phone',
+        'role',
+        'status',
+        'department_id',
         'password',
     ];
+
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
