@@ -23,35 +23,6 @@ use App\Models\User;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => 'auth'], function () {
-
-    Route::controller(ProfileController::class)->group(function () {
-        Route::get('/profile', 'profile');
-        Route::put('/change-profile', 'updateProfile');
-        Route::put('/change-password', 'updatePassword');
-    });
-    Route::controller(DepartmentController::class)->prefix('department')
-        ->middleware('user-access:0')->group(function () {
-            Route::get('/', 'index');
-            Route::post('/', 'store');
-            Route::put('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');
-        });
-
-    Route::controller(UserController::class)->prefix('user')
-        ->middleware('user-access:0')->group(function () {
-            Route::get('/', 'index');
-            Route::post('/', 'store');
-            Route::put('/{id}', 'update');
-            Route::delete('/{id}', 'destroy');
-        });
+Route::controller(UserController::class)->name('api.')->group(function () {
+    Route::get('/', 'usersApi')->name('users');
 });
-Route::group(['middleware' => 'api', 'prefix' => 'auth'],
-    function ($router) {
-        Route::post('login', [AuthController::class, 'login']);
-        Route::post('register', [AuthController::class, 'register']);
-        Route::post('logout', [AuthController::class, 'logout']);
-        Route::post('refresh', [AuthController::class, 'refresh']);
-        Route::post('me', [AuthController::class, 'me']);
-    }
-);

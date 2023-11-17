@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,6 +12,11 @@ class UserController extends Controller
 
     public function index()
     {
+        $departments = Department::orderByDesc('id')->get();
+        return view('users.index', compact('departments'));
+    }
+    public function usersApi()
+    {
         return response()->json(User::with(['department'])->get());
     }
     public function store(Request $request)
@@ -18,44 +24,43 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|min:4',
             'phone' => 'required|numeric|digits:10|unique:users,phone',
-            'department_id' => 'required|exists:departments,id',
+            'department' => 'required|exists:departments,id',
             'role' => 'required|in:0,1,2',
             'username' => 'required|min:4|unique:users,username',
+            'savings' => 'required|numeric',
         ]);
         $request->merge([
+            'department_id' => $request->department,
             'password' => bcrypt($request->username),
             'regnumber' => 'VFC' . str_pad(User::count() + 1, 3, '0', STR_PAD_LEFT),
         ]);
 
         try {
             User::create($request->all());
-            return response()->json("User Registed", 200);
+            return back()->with('success', 'User Registed Succesfully');
         } catch (\Throwable $th) {
             //throw $th;
-            return response()->json("some thing went wrong",500);
+            return back()->with('error', 'some thing went wrong');
         }
     }
     public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|string|min:4',
-            'phone' => 'required|numeric|digits:10|unique:users,phone,'.$id,
+            'phone' => 'required|numeric|digits:10|unique:users,phone,' . $id,
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|in:0,1,2',
-            'username' => 'required|min:4|unique:users,username,'.$id,
+            'username' => 'required|min:4|unique:users,username,' . $id,
+            'savings' => 'required|numeric',
+            'status' => 'required',
         ]);
 
         try {
             User::find($id)->update($request->all());
-            return response()->json("User Updated", 200);
+            return back()->with('success', 'User Updated Succesfully');
         } catch (\Throwable $th) {
             //throw $th;
-            return response()->json("some thing went wrong",500);
+            return back()->with('error', 'some thing went wrong');
         }
-    }
-    public function destroy($id)
-    {
-        User::findorfail($id)->delete();
-        return response()->json("Department Deleted", 200);
     }
 }

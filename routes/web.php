@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +18,38 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middleware' => 'guest'], function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('/', 'index')->name('login');
+        Route::post('/', 'login')->name('login.post');
+        Route::get('/forgot-password', 'forgotPassword')->name('forgotPassword');
+        Route::get('/success', 'success')->name('success');
+        Route::post('/forgot-password', 'sendResetLinkEmail')->name('sendResetLinkEmail');
+    });
+});
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/dashboard', 'index')->name('home');
+    });
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'profile')->name('profile');
+        Route::put('/change-password', 'changePassword')->name('changePassword');
+        Route::put('/change-personal-details', 'changePersonalDetails')->name('changePersonalDetails');
+    });
+    Route::controller(SettingsController::class)->prefix('settings')->name('setting.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/department', 'storeDepartment')->name('storeDepartment');
+        Route::put('/department/{id}', 'updateDepartment')->name('updateDepartment');
+        Route::delete('/department/{id}', 'destroyDepartment')->name('destroyDepartment');
+    });
+    Route::controller(UserController::class)->prefix('members')->name('user.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::put('/{id}', 'update')->name('update');
+    });
+    Route::get('/logout', function () {
+        auth()->logout();
+        return redirect()->route('login');
+    })->name('logout');
 });

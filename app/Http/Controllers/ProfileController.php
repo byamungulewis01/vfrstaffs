@@ -10,38 +10,32 @@ class ProfileController extends Controller
 {
     public function profile()
     {
-        return response()->json(auth()->user());
-        // return response()->json(auth()->user()->with('department')->first());
+        return view('profile');
     }
-    public function updateProfile(Request $request)
-    {
-        $id = auth()->user()->id;
-        $request->validate([
-            'name' => 'required|string|min:4',
-            'phone' => 'required|numeric|digits:10|unique:users,phone,' . $id,
-            'username' => 'required|min:4|unique:users,username,' . $id,
-        ]);
-
-        try {
-            User::find($id)->update($request->all());
-            return response()->json("Profile Updated", 200);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json("some thing went wrong", 500);
-        }
-    }
-    public function updatePassword(Request $request)
+    public function changePassword(Request $request)
     {
         $request->validate([
-            'current_password' => 'required',
-            'password' => 'required|confirmed',
+            'old_password' => 'required',
+            'password' => 'required|confirmed|min:4',
         ]);
         $user = User::findorfail(auth()->user()->id);
-        if (Hash::check($request->current_password, $user->password)) {
+        if (Hash::check($request->old_password, $user->password)) {
             $user->update(['password' => Hash::make($request->password)]);
-            return response()->json('Password Changed Successfully');
+            auth()->logout();
+            return back()->with('success', 'Password Changed Successfully');
         } else {
-            return response()->json('Current Password Not Matched');
+            return back()->with('error', 'Old Password Not Matched');
         }
+    }
+    // changePersonalDetails
+    public function changePersonalDetails(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'phone' => 'required|unique:users,phone,' . auth()->user()->id,
+            'username' => 'required|unique:users,username,' . auth()->user()->id,
+        ]);
+        User::findorfail(auth()->user()->id)->update($request->all());
+        return redirect()->back()->with('success', 'Personal Details Changed Successfully');
     }
 }

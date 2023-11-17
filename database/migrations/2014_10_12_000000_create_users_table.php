@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->bigInteger('savings');
             $table->enum('role', [0, 1, 2])->default(0);
             $table->enum('status', [0, 1])->default(1);
             $table->foreignId('department_id')->constrained()->cascadeOnDelete();
