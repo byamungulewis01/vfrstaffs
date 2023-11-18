@@ -38,7 +38,7 @@
         background-position: center; background-size: cover; ">
             <div class="d-flex align-items-center justify-content-center w-100">
                 <div class="row justify-content-center w-100">
-                    <div class="col-md-6 col-lg-6 col-xxl-4">
+                    <div class="col-md-4 col-lg-4 col-xxl-4">
                         <div class="card mb-0">
                             <div class="card-body">
                                 <a href="#" class="text-nowrap logo-img text-center d-block mb-5 w-100">

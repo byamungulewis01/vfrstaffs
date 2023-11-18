@@ -65,13 +65,40 @@
                 </li>
 
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('setting.index') }}" aria-expanded="false">
-                        <span>
+                    <a class="sidebar-link has-arrow" href="#settings" aria-expanded="false">
+                        <span class="d-flex">
                             <i class="ti ti-settings"></i>
                         </span>
                         <span class="hide-menu">Settings</span>
                     </a>
+                    <ul aria-expanded="false" class="collapse first-level">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('setting.index') }}">
+                                <div class="round-16 d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-circle"></i>
+                                </div>
+                                <span class="hide-menu">Pre Settings</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('setting.loginHistory') }}">
+                                <div class="round-16 d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-circle"></i>
+                                </div>
+                                <span class="hide-menu">Login History</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('setting.systemHistory') }}">
+                                <div class="round-16 d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-circle"></i>
+                                </div>
+                                <span class="hide-menu">System History</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
 
             </ul>
         </nav>

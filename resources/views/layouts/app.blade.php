@@ -12,7 +12,7 @@
     <meta name="MobileOptimized" content="width" />
     <meta name="description" content="Vision Found Rwanda Saving Management System" />
     <meta name="author" content="D'amour UWIZEYE" />
-    <meta name="keywords" content="VFRStaffs" />
+    <meta name="keywords" content="VFRStaffs,Vision Found Rwanda Saving Management System" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <!--  Favicon -->
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/icon2.png') }}" />

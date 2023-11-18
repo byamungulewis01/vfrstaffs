@@ -42,6 +42,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/department', 'storeDepartment')->name('storeDepartment');
         Route::put('/department/{id}', 'updateDepartment')->name('updateDepartment');
         Route::delete('/department/{id}', 'destroyDepartment')->name('destroyDepartment');
+        // Loan Settings
+        Route::post('/loan-setting', 'storeLoanSetting')->name('storeLoanSetting');
+        Route::put('/loan-setting/{id}', 'updateLoanSetting')->name('updateLoanSetting');
+        // login history
+        Route::get('/login-history', 'loginHistory')->name('loginHistory');
+        // system history
+        Route::get('/system-history','systemHistory')->name('systemHistory');
+
     });
     Route::controller(UserController::class)->prefix('members')->name('user.')->group(function () {
         Route::get('/', 'index')->name('index');

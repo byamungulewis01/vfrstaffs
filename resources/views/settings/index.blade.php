@@ -142,6 +142,135 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-9">
+                        <h5 class="mb-0">Loan Settings</h5>
+                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#LoanSettingsModal"
+                            class="btn btn-primary btn-sm">Add New</a>
+                        <div class="modal fade" id="LoanSettingsModal" tabindex="-1"
+                            aria-labelledby="exampleModalLabel1">
+                            <div class="modal-dialog modal-md" role="document">
+                                <div class="modal-content p-3">
+                                    <div class="modal-header d-flex align-items-center">
+                                        <h4 class="modal-title" id="exampleModalLabel1">
+                                            New Loan type
+                                        </h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('setting.storeLoanSetting') }}" method="POST">
+                                        <div class="modal-body">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <label for="name" class="control-label mb-2">Loan Type Name:</label>
+                                                <input type="text" name="name" class="form-control text-capitalize"
+                                                    value="{{ old('name') }}" autocomplete="off" autofocus="on"
+                                                    placeholder="Loan Type Name">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="rate" class="control-label mb-2">Loan interest
+                                                    rate:</label>
+                                                <input type="number" name="rate" class="form-control"
+                                                    value="{{ old('rate') }}" autocomplete="off"
+                                                    placeholder="Loan interest rate" min="1" max="100">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light-danger text-danger font-medium"
+                                                data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button class="btn btn-success"> Submit </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.modal -->
+                    </div>
+                    <table class="table align-middle text-nowrap mb-0 datatable" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th scope="scope">Laon ID</th>
+                                <th scope="col">Laon Type Name</th>
+                                <th scope="col">Rate</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($loanSettings as $item)
+                                <tr>
+                                    <th>{{ $item->loan_id }}</th>
+                                    <td>
+                                        {{ $item->name }}
+                                    </td>
+                                    <td>
+                                        {{ $item->rate }} %
+                                    </td>
+
+                                    <td class="d-flex justify-content-center gap-2">
+                                        <a data-bs-toggle="modal" data-bs-target="#editLoanSetting{{ $item->id }}"
+                                            class="btn btn-sm btn-primary" href="#"><i
+                                                class="fs-4 ti ti-edit"></i>Edit</a>
+
+                                        <div class="modal fade" id="editLoanSetting{{ $item->id }}" tabindex="-1"
+                                            aria-labelledby="exampleModalLabel1">
+                                            <div class="modal-dialog modal-md" role="document">
+                                                <div class="modal-content p-3">
+                                                    <div class="modal-header d-flex align-items-center">
+                                                        <h4 class="modal-title" id="exampleModalLabel1">
+                                                            Edit Loan Setting
+                                                        </h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('setting.updateLoanSetting', $item->id) }}"
+                                                        method="POST">
+                                                        <div class="modal-body">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <div class="mb-3">
+                                                                <label for="name" class="control-label mb-2">Loan Type
+                                                                    Name:</label>
+                                                                <input type="text" name="name"
+                                                                    class="form-control text-capitalize"
+                                                                    value="{{ $item->name }}" autocomplete="off"
+                                                                    autofocus="on" placeholder="Loan Type Name">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="rate" class="control-label mb-2">Loan
+                                                                    interest
+                                                                    rate:</label>
+                                                                <input type="number" name="rate" class="form-control"
+                                                                    value="{{ $item->rate }}" autocomplete="off"
+                                                                    placeholder="Loan interest rate" min="1"
+                                                                    max="100">
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button"
+                                                                class="btn btn-light-danger text-danger font-medium"
+                                                                data-bs-dismiss="modal">
+                                                                Close
+                                                            </button>
+                                                            <button class="btn btn-success"> Save </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.modal -->
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('script')
