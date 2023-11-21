@@ -30,6 +30,41 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
+                    <a class="sidebar-link has-arrow" href="#savings" aria-expanded="false">
+                        <span class="d-flex">
+                            <i class="ti ti-cards"></i>
+                        </span>
+                        <span class="hide-menu">Savings</span>
+                    </a>
+                    <ul aria-expanded="false" class="collapse first-level">
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('saving.index') }}">
+                                <div class="round-16 d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-circle"></i>
+                                </div>
+                                <span class="hide-menu">Monthly Savings</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('user.active') }}">
+                                <div class="round-16 d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-circle"></i>
+                                </div>
+                                <span class="hide-menu">Members Savings</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('saving.create') }}">
+                                <div class="round-16 d-flex align-items-center justify-content-center">
+                                    <i class="ti ti-circle"></i>
+                                </div>
+                                <span class="hide-menu">Create Savings</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="sidebar-item">
                     <a class="sidebar-link has-arrow" href="#users" aria-expanded="false">
                         <span class="d-flex">
                             <i class="ti ti-users"></i>
@@ -46,7 +81,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="active">
+                            <a class="sidebar-link" href="{{ route('user.active') }}">
                                 <div class="round-16 d-flex align-items-center justify-content-center">
                                     <i class="ti ti-circle"></i>
                                 </div>
@@ -54,7 +89,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="disactive">
+                            <a class="sidebar-link" href="{{ route('user.inactive') }}">
                                 <div class="round-16 d-flex align-items-center justify-content-center">
                                     <i class="ti ti-circle"></i>
                                 </div>

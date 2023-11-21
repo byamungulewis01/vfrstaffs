@@ -10,15 +10,29 @@ class UserController extends Controller
 {
     //index
 
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
+            return response()->json(User::with(['department'])->get());
+        }
         $departments = Department::orderByDesc('id')->get();
         return view('users.index', compact('departments'));
     }
-    public function usersApi()
+    public function active(Request $request)
     {
-        return response()->json(User::with(['department'])->get());
+        if ($request->ajax()) {
+            return response()->json(User::where('status','1')->with(['department'])->get());
+        }
+        return view('users.active');
     }
+    public function inactive(Request $request)
+    {
+        if ($request->ajax()) {
+            return response()->json(User::where('status','0')->with(['department'])->get());
+        }
+        return view('users.inactive');
+    }
+
     public function store(Request $request)
     {
         $request->validate([

@@ -281,7 +281,7 @@
     <script>
         $(function() {
             $.ajax({
-                url: "{{ route('api.users') }}",
+                url: "{{ route('user.index') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {

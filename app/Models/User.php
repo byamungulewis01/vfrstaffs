@@ -8,10 +8,12 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Yadahan\AuthenticationLog\AuthenticationLogable;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable ,AuthenticationLogable;
+    use  HasApiTokens, LogsActivity,HasFactory, Notifiable, AuthenticationLogable;
 
     /**
      * The attributes that are mass assignable.
@@ -60,5 +62,10 @@ class User extends Authenticatable
      *
      * @return mixed
      */
-
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly(['*']);
+        // Chain fluent methods for configuration options
+    }
 }

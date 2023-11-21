@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SavingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
@@ -53,8 +54,16 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::controller(UserController::class)->prefix('members')->name('user.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/active', 'active')->name('active');
+        Route::get('/inactive', 'inactive')->name('inactive');
         Route::post('/', 'store')->name('store');
         Route::put('/{id}', 'update')->name('update');
+    });
+
+    Route::controller(SavingController::class)->prefix('savings')->name('saving.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
     });
     Route::get('/logout', function () {
         auth()->logout();

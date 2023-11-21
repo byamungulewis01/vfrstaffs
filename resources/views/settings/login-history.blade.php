@@ -25,7 +25,6 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $log->user_name }}</td>
                             <td> {{ $log->ip_address }}</td>
-                            </td>
                             <td>{{ $log->login_at }}</td>
                             <td>{{ $log->logout_at }}</td>
                         </tr>
