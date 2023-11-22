@@ -62,8 +62,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::controller(SavingController::class)->prefix('savings')->name('saving.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/show/{id}', 'show')->name('show');
         Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/members', 'members')->name('members');
+        Route::get('/members/{id}', 'showMember')->name('showMember');
     });
     Route::get('/logout', function () {
         auth()->logout();

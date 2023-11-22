@@ -37,6 +37,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class);
     }
+    public function total_saving()
+    {
+        // sum of SavingMember  count
+        return \App\Models\SavingMember::where('user_id',$this->id)->sum('amount');
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

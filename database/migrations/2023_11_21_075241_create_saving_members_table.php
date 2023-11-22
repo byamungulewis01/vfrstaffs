@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('savings', function (Blueprint $table) {
+        Schema::create('saving_members', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('amount');
-            $table->string('comment');
-            $table->enum('status', ['requested', 'approved', 'rejected']);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('saving_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->integer('amount');
+            $table->string('comment')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('savings');
+        Schema::dropIfExists('saving_members');
     }
 };

@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Saving extends Model
+class SavingMember extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'user_id',
+        'saving_id',
         'amount',
         'comment',
-        'status',
-        'user_id',
     ];
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

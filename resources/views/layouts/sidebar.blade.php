@@ -36,17 +36,17 @@
                         </span>
                         <span class="hide-menu">Savings</span>
                     </a>
-                    <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="{{ route('saving.index') }}">
+                    <ul aria-expanded="false" class="collapse first-level {{ in_array(Route::currentRouteName(), ['saving.index','saving.show','saving.showMember']) ? 'in' : '' }}">
+                        <li class="sidebar-item {{ in_array(Route::currentRouteName(), ['saving.index','saving.show']) ? 'active' : '' }}">
+                            <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['saving.index','saving.show']) ? 'active' : '' }}" href="{{ route('saving.index') }}">
                                 <div class="round-16 d-flex align-items-center justify-content-center">
                                     <i class="ti ti-circle"></i>
                                 </div>
                                 <span class="hide-menu">Monthly Savings</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="{{ route('user.active') }}">
+                        <li class="sidebar-item {{ in_array(Route::currentRouteName(), ['saving.members','saving.showMember']) ? 'active' : '' }}">
+                            <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['saving.members','saving.showMember']) ? 'active' : '' }}" href="{{ route('saving.members') }}">
                                 <div class="round-16 d-flex align-items-center justify-content-center">
                                     <i class="ti ti-circle"></i>
                                 </div>

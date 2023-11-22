@@ -17,7 +17,7 @@
                             <div class="mb-4">
                                 <div style="display: none;" id="totalSavings">Total Savings: {{ $users->sum('savings') }}</div>
                                 <label for="exampleInputtext" class="form-label fw-semibold">Total Monthly Savings</label>
-                                <input type="text" name="savings" class="form-control" readonly id="exampleInputtext" value="{{ $users->sum('savings') }}">
+                                <input type="text" name="amount" class="form-control" readonly id="exampleInputtext" value="{{ $users->sum('savings') }}">
                             </div>
 
                         </div>
@@ -55,8 +55,8 @@
                                                 </td>
                                                 <td>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" name="users[]" type="checkbox" checked
-                                                            value="{{ $user->id }}" data-savings="{{ $user->savings }}"
+                                                        <input class="form-check-input" name="members[]" type="checkbox" checked
+                                                            value="{{ $user->id }},{{ $user->savings }}" data-savings="{{ $user->savings }}"
                                                             id="check" onchange="updateTotalSavings(this)">
 
                                                     </div>
