@@ -11,6 +11,7 @@ class Saving extends Model
     protected $fillable = [
         'amount',
         'comment',
+        'type',
         'status',
         'user_id',
     ];

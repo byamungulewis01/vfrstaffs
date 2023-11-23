@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('saving_id')->nullable()->constrained()->cascadeOnDelete();
             $table->integer('amount');
-            $table->string('comment')->nullable();
             $table->timestamps();
         });
     }

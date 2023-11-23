@@ -33,10 +33,12 @@ class SavingController extends Controller
     {
         $user = User::select('users.*', DB::raw('SUM(saving_members.amount) as total_amount'))
             ->join('saving_members', 'users.id', '=', 'saving_members.user_id')->where('users.id', $id)->first();
-        // if ($request->ajax()) {
-        //     return response()->json($usersWithTotalAmount);
-        // }
-        return view('savings.member-show',compact('user'));
+
+        $savings = SavingMember::with('_saving')->where('user_id', $id)->orderByDesc('id')->get();
+        if ($request->ajax()) {
+            return response()->json($savings);
+        }
+        return view('savings.member-show', compact('user'));
     }
     public function show(Request $request, $id)
     {
@@ -49,7 +51,6 @@ class SavingController extends Controller
     }
     public function create(Request $request)
     {
-
         if ($request->ajax()) {
             return response()->json(User::with(['department'])->get());
         }
@@ -92,6 +93,36 @@ class SavingController extends Controller
                 return back()->with('error', 'some thing went wrong');
             }
             return to_route('saving.index')->with('success', 'Saving Created Successfully');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('error', 'some thing went wrong');
+        }
+    }
+    public function memberSaving(Request $request, $id)
+    {
+        $request->validate([
+            'amount' => 'required|numeric',
+            'comment' => 'required',
+            'type' => 'required',
+        ]);
+        try {
+            $saving = Saving::create([
+                'amount' => $request->amount,
+                'comment' => $request->comment,
+                'type' => $request->type,
+                'saving_by' => 'single',
+                'user_id' => auth()->user()->id,
+            ]);
+            if ($saving) {
+                SavingMember::create([
+                    'user_id' => $id,
+                    'amount' => $request->amount,
+                    'saving_id' => $saving->id,
+                ]);
+            } else {
+                return back()->with('error', 'some thing went wrong');
+            }
+            return back()->with('success', 'Saving Created Successfully');
         } catch (\Throwable $th) {
             //throw $th;
             return back()->with('error', 'some thing went wrong');

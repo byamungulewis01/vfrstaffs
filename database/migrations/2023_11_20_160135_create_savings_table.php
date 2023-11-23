@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('amount');
             $table->string('comment');
+            $table->enum('type',['deposit', 'withdraw'])->default('deposit');
+            $table->enum('saving_by',['single', 'members'])->default('members');
             $table->enum('status', ['requested', 'approved', 'rejected']);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

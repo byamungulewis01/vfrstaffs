@@ -12,10 +12,13 @@ class SavingMember extends Model
         'user_id',
         'saving_id',
         'amount',
-        'comment',
     ];
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function _saving()
+    {
+        return $this->hasOne(Saving::class, 'id','saving_id');
     }
 }

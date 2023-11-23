@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SavingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
 
@@ -67,7 +68,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/store', 'store')->name('store');
         Route::get('/members', 'members')->name('members');
         Route::get('/members/{id}', 'showMember')->name('showMember');
+        Route::post('/member/saving/{id}', 'memberSaving')->name('memberSaving');
     });
+    Route::controller(ApprovalController::class)->group(function () {
+        Route::get('/savings/requests', 'requests')->name('saving.requests');
+        Route::put('/savings/approve/{id}', 'approve')->name('saving.approve');
+        Route::put('/savings/reject/{id}', 'reject')->name('saving.reject');
+        Route::get('/savings/requests/{id}', 'requestShow')->name('saving.requestShow');
+    });
+
     Route::get('/logout', function () {
         auth()->logout();
         return redirect()->route('login');
