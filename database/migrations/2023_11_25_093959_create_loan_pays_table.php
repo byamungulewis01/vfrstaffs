@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saving_members', function (Blueprint $table) {
+        Schema::create('loan_pays', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('saving_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->enum('type',['deposit', 'withdraw'])->default('deposit');
-            $table->integer('amount');
+            $table->bigInteger('amount');
+            $table->integer('interest');
+            $table->string('comment');
+            $table->enum('status', ['requested', 'approved', 'rejected'])->default('requested');
+            $table->foreignId('loan_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saving_members');
+        Schema::dropIfExists('loan_pays');
     }
 };

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LoanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -50,8 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
         // login history
         Route::get('/login-history', 'loginHistory')->name('loginHistory');
         // system history
-        Route::get('/system-history','systemHistory')->name('systemHistory');
-
+        Route::get('/system-history', 'systemHistory')->name('systemHistory');
     });
     Route::controller(UserController::class)->prefix('members')->name('user.')->group(function () {
         Route::get('/', 'index')->name('index');
@@ -70,11 +70,29 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/members/{id}', 'showMember')->name('showMember');
         Route::post('/member/saving/{id}', 'memberSaving')->name('memberSaving');
     });
+
+    Route::controller(LoanController::class)->prefix('loans')->name('loan.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/show/{id}', 'show')->name('show');
+
+        Route::post('/quick-cover-loan/{id}', 'storeQCL')->name('storeQCL');
+        Route::post('/pay-off/{id}', 'storePayOff')->name('storePayOff');
+    });
+
     Route::controller(ApprovalController::class)->group(function () {
         Route::get('/savings/requests', 'requests')->name('saving.requests');
         Route::put('/savings/approve/{id}', 'approve')->name('saving.approve');
         Route::put('/savings/reject/{id}', 'reject')->name('saving.reject');
         Route::get('/savings/requests/{id}', 'requestShow')->name('saving.requestShow');
+
+        Route::get('/loans/requests', 'loans')->name('loan.requests');
+        Route::put('/loans/approve/{id}', 'loan_approve')->name('loan.approve');
+        Route::put('/loans/reject/{id}', 'loan_reject')->name('loan.reject');
+
+        Route::get('/loans/monthly-requests', 'monthly_request_loans')->name('loan.monthly_request_loans');
+        Route::put('/loans/monthly-approve/{id}', 'monthly_loan_approve')->name('loan.monthly_loan_approve');
+        Route::put('/loans/monthly-reject/{id}', 'monthly_loan_reject')->name('loan.monthly_loan_reject');
     });
 
     Route::get('/logout', function () {

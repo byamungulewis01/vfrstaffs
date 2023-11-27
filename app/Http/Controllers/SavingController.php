@@ -21,7 +21,8 @@ class SavingController extends Controller
     // members
     public function members(Request $request)
     {
-        $usersWithTotalAmount = User::select('users.*', DB::raw('SUM(saving_members.amount) as total_amount'))
+        $usersWithTotalAmount = User::select('users.*', DB::raw('SUM(saving_members.amount) as total_amount'),
+        DB::raw('SUM(CASE WHEN saving_members.type = "withdraw" THEN saving_members.amount ELSE 0 END) as total_withdrawn_amount'))
             ->join('saving_members', 'users.id', '=', 'saving_members.user_id')
             ->groupBy('users.id')->orderBy('total_amount', 'desc')->get();
         if ($request->ajax()) {
@@ -34,11 +35,9 @@ class SavingController extends Controller
         $user = User::select('users.*', DB::raw('SUM(saving_members.amount) as total_amount'))
             ->join('saving_members', 'users.id', '=', 'saving_members.user_id')->where('users.id', $id)->first();
 
-        $savings = SavingMember::with('_saving')->where('user_id', $id)->orderByDesc('id')->get();
-        if ($request->ajax()) {
-            return response()->json($savings);
-        }
-        return view('savings.member-show', compact('user'));
+        $savings = SavingMember::where('user_id', $id)->orderByDesc('id')->get();
+
+        return view('savings.member-show', compact('user','savings','id'));
     }
     public function show(Request $request, $id)
     {
@@ -116,6 +115,7 @@ class SavingController extends Controller
             if ($saving) {
                 SavingMember::create([
                     'user_id' => $id,
+                    'type' => $request->type,
                     'amount' => $request->amount,
                     'saving_id' => $saving->id,
                 ]);

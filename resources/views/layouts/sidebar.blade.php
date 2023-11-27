@@ -56,6 +56,38 @@
             </ul>
         </li>
         <li class="sidebar-item">
+            <a class="sidebar-link has-arrow" href="#loans" aria-expanded="false">
+                <span class="d-flex">
+                    <i class="ti ti-currency-dollar"></i>
+                </span>
+                <span class="hide-menu">Loans</span>
+            </a>
+            <ul aria-expanded="false"
+                class="collapse first-level {{ in_array(Route::currentRouteName(), ['loan.index', 'loan.show']) ? 'in' : '' }}">
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.index', 'loan.show']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.index', 'loan.show']) ? 'active' : '' }}"
+                        href="{{ route('loan.index') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Monthly Active Loan</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['saving.members', 'saving.showMember']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['saving.members', 'saving.showMember']) ? 'active' : '' }}"
+                        href="{{ route('saving.members') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Monthly Closed Loan</span>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="#users" aria-expanded="false">
                 <span class="d-flex">
                     <i class="ti ti-users"></i>

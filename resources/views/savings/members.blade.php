@@ -54,10 +54,6 @@
                             data: 'name'
                         }, {
                             data: 'phone'
-                        }, {
-                            data: 'savings'
-                        }, {
-                            data: 'total_amount'
                         }, ],
                         columnDefs: [
 
@@ -66,10 +62,22 @@
                                 render: function(data, type, row, meta) {
                                     return meta.row + meta.settings._iDisplayStart + 1;
                                 }
+                            },{
+                                targets: 4,
+                                render: function(data, type, row) {
+                                    return Number(row.savings).toLocaleString();
+                                }
+                            }, {
+                                targets: 5,
+                                render: function(data, type, row, meta) {
+                                    var difference = row.total_amount - row.total_withdrawn_amount;
+                                    return Number(difference).toLocaleString();
+                                }
                             }, {
                                 targets: 6,
                                 render: function(data, type, row, meta) {
-                                    var route ="{{ route('saving.showMember', ['id' => ':id']) }}";
+                                    var route =
+                                        "{{ route('saving.showMember', ['id' => ':id']) }}";
                                     route = route.replace(':id', row.id);
                                     return `<a href=${route} class="btn btn-primary btn-sm">MS View</a>`;
                                 }

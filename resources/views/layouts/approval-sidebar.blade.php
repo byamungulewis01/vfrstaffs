@@ -34,6 +34,26 @@
                         <span class="hide-menu">Monthly Savings</span>
                     </a>
                 </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.requests', 'loan.requestShow']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.requests', 'loan.requestShow']) ? 'active' : '' }}"
+                        href="{{ route('loan.requests') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Loan Approving</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.monthly_request_loans', 'loan.requestShow']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.monthly_request_loans', 'loan.requestShow']) ? 'active' : '' }}"
+                        href="{{ route('loan.monthly_request_loans') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Monthly Loans</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="sidebar-item">

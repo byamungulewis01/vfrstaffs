@@ -22,8 +22,17 @@
                             <td>{{ $user->regnumber }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->phone }} </td>
-                            <td>{{ $user->savings }}</td>
-                            <td>{{ $user->total_amount }}</td>
+                            <td>{{ number_format($user->savings) }}</td>
+                            <td>
+                                @php
+                                    $withdraw = \App\Models\SavingMember::where('user_id', $id)
+                                        ->where('type', 'withdraw')
+                                        ->sum('amount');
+                                    $total = $user->total_amount - $withdraw;
+                                    $footer_total = $total;
+                                @endphp
+                                {{ number_format($total) }}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -34,8 +43,8 @@
                 <div class="card-body p-3">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="mb-0">All Savings</h4>
-                        <a href="{{ route('saving.create') }}" class="btn btn-outline-primary flex-1 me-2"
-                            data-bs-toggle="modal" data-bs-target="#addModel">Add MST</a>
+                        <button class="btn btn-outline-primary flex-1 me-2" data-bs-toggle="modal"
+                            data-bs-target="#addModel">Add MST</button>
                         <div class="modal fade" id="addModel" tabindex="-1" aria-labelledby="exampleModalLabel1">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content p-3">
@@ -110,7 +119,40 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($savings as $saving)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $saving->created_at->format('Y-m-d') }}</td>
+                                    <td>
+                                        @if ($saving->_saving->type == 'deposit')
+                                            Deposit
+                                        @else
+                                            Withdraw
+                                        @endif
+                                    </td>
+                                    <td>{{ $saving->_saving->comment }}</td>
+                                    <td>{{ number_format($saving->amount) }}</td>
+                                    <td>
+                                        {{ number_format($total) }}
+                                        @if ($saving->_saving->type == 'deposit')
+                                            @php $total -= $saving->amount  @endphp
+                                        @else
+                                            @php $total += $saving->amount  @endphp
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th scope="col" colspan="2">Total Saving</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col">{{ number_format($footer_total) }}</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -124,78 +166,7 @@
     <script src="{{ asset('dist/libs/datatables.net/js/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         $(function() {
-            var id = "{{ $user->id }}";
-            var route = "{{ route('saving.showMember', ['id' => ':id']) }}";
-            route = route.replace(':id', id);
-            $.ajax({
-                url: route,
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    console.log(data);
-                    $('#datatable').DataTable({
-                        data: data,
-                        columns: [{
-                            data: ''
-                        }, {
-                            data: ''
-                        }, {
-                            data: ''
-                        }, {
-                            data: ''
-                        }, {
-                            data: 'amount'
-                        }, {
-                            data: ''
-                        }],
-                        columnDefs: [
-
-                            {
-                                targets: 0,
-                                render: function(data, type, row, meta) {
-                                    return meta.row + meta.settings._iDisplayStart + 1;
-                                }
-                            }, {
-                                targets: 1,
-                                render: function(data, type, row) {
-                                    const date = new Date(row.created_at);
-                                    const options = {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric'
-                                    };
-                                    const formattedDate = new Intl.DateTimeFormat(
-                                        'en-US', options).format(date);
-                                    return '<span>' + formattedDate + '</span>';
-                                }
-                            }, {
-                                targets: 2,
-                                render: function(data, type, row) {
-                                    function capitalizeFirstLetter(string) {
-                                        return string.charAt(0).toUpperCase() + string
-                                            .slice(1);
-                                    }
-                                    var capitalizedType = capitalizeFirstLetter(row
-                                        ._saving.type);
-                                    return '<span>' + capitalizedType + '</span>';
-                                }
-                            }, {
-                                targets: 3,
-                                render: function(data, type, row) {
-                                    return '<span>' + row._saving.comment + '</span>';
-                                }
-                            }, {
-                                targets: 5,
-                                render: function(data, type, row) {
-                                    return row.amount;
-                                }
-                            }
-                        ],
-
-                        scrollX: true,
-                    });
-                }
-            });
+            $('#datatable').DataTable();
         });
     </script>
 @endsection

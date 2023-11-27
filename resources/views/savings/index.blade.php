@@ -31,6 +31,7 @@
                     </thead>
                     <tbody>
                     </tbody>
+                    
                 </table>
             </div>
         </div>
@@ -137,7 +138,7 @@
                                 render: function(data, type, row) {
                                     var route ="{{ route('saving.show', ['id' => ':id']) }}";
                                     route = route.replace(':id', row.id);
-                                    return `<a href="${route}"><i class="text-primary ti ti-eye"></i>   View</a>`;
+                                    return `<a class="btn btn-sm btn-primary" href="${route}"> View</a>`;
                                 }
                             },
                         ],
