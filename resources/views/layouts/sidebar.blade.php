@@ -75,9 +75,9 @@
                     </a>
                 </li>
                 <li
-                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['saving.members', 'saving.showMember']) ? 'active' : '' }}">
-                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['saving.members', 'saving.showMember']) ? 'active' : '' }}"
-                        href="{{ route('saving.members') }}">
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.loan_closed']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.loan_closed']) ? 'active' : '' }}"
+                        href="{{ route('loan.loan_closed') }}">
                         <div class="round-16 d-flex align-items-center justify-content-center">
                             <i class="ti ti-circle"></i>
                         </div>

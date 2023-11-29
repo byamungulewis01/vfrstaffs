@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MemberController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +74,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::controller(LoanController::class)->prefix('loans')->name('loan.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/closed', 'loan_closed')->name('loan_closed');
         Route::post('/', 'store')->name('store');
         Route::get('/show/{id}', 'show')->name('show');
 
@@ -93,6 +95,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/loans/monthly-requests', 'monthly_request_loans')->name('loan.monthly_request_loans');
         Route::put('/loans/monthly-approve/{id}', 'monthly_loan_approve')->name('loan.monthly_loan_approve');
         Route::put('/loans/monthly-reject/{id}', 'monthly_loan_reject')->name('loan.monthly_loan_reject');
+    });
+
+    Route::controller(MemberController::class)->prefix('member')->name('member.')->group(function () {
+
+        Route::get('/savings', 'savings')->name('savings');
+        Route::get('/loans', 'loans')->name('loans');
+        Route::post('/loans', 'store_loan')->name('store_loan');
+        Route::get('/loans/show/{id}', 'show_loan')->name('show_loan');
+
     });
 
     Route::get('/logout', function () {

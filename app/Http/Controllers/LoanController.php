@@ -14,10 +14,17 @@ class LoanController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return response()->json(Loan::with(['user', 'loan_setting', 'loan_pays'])->orderByDesc('id')->get());
+            return response()->json(Loan::with(['user', 'loan_setting', 'loan_pays'])->where('loan_status', 'open')->orderByDesc('id')->get());
         }
         $loanTypes = LoanSetting::all();
         return view('loans.index', compact('loanTypes'));
+    }
+    public function loan_closed(Request $request)
+    {
+        if ($request->ajax()) {
+            return response()->json(Loan::with(['user', 'loan_setting', 'loan_pays'])->where('loan_status', 'closed')->orderByDesc('id')->get());
+        }
+        return view('loans.closed-loans');
     }
 
     public function store(Request $request)
@@ -101,7 +108,7 @@ class LoanController extends Controller
             if ($last) {
                 return back()->with('error', 'Please wait for last loan to be approved');
             }
-            
+
             $request->merge(['loan_id' => $id]);
             LoanPay::create($request->all());
             return back()->with('success', 'Loan Payed Off');
