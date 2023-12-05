@@ -25,7 +25,7 @@
             </a>
         </li>
         <li class="sidebar-item {{ in_array(Route::currentRouteName(), ['member.loans','member.show_loan']) ? 'active' : '' }}">
-            <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['member.loans','member.show_loan']) ? 'active' : '' }}" href="{{ route('member.loans') }}" aria-expanded="false">
+            <a class="sidebar-link {{ in_array(phpRoute::currentRouteName(), ['member.loans','member.show_loan']) ? 'active' : '' }}" href="{{ route('member.loans') }}" aria-expanded="false">
                 <span class="d-flex">
                     <i class="ti ti-currency-dollar"></i>
                 </span>
