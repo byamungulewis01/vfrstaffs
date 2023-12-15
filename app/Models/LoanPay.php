@@ -15,9 +15,15 @@ class LoanPay extends Model
         'comment',
         'status', //requested,approved and rejected,
         'loan_id',
+        'approved_by',
+
     ];
     public function loan()
-     {
-         return $this->belongsTo(Loan::class);
-     }
+    {
+        return $this->belongsTo(Loan::class);
+    }
+    public function approval()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
 }

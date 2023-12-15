@@ -17,6 +17,7 @@ class Loan extends Model
         'status',
         'user_id',
         'loan_type',
+        'remain_interest',
     ];
 
     public function user()

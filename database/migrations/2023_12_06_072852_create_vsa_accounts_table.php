@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('savings', function (Blueprint $table) {
+        Schema::create('vsa_accounts', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('amount');
+            $table->enum('type', ['deposit', 'withdraw']);
+            $table->enum('source', ['loan','saving','interest', 'other']);
             $table->string('comment');
-            $table->enum('type',['deposit', 'withdraw'])->default('deposit');
-            $table->enum('status', ['requested', 'approved', 'rejected']);
             $table->foreignId('saving_by')->nullable()->constrained('users')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('savings');
+        Schema::dropIfExists('vsa_accounts');
     }
 };

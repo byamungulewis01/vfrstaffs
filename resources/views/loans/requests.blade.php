@@ -10,6 +10,33 @@
                 <div class="d-flex justify-content-between align-items-center mb-9">
                     <h2>ACTIVE LOANS MANAGEMENT</h2>
 
+                    <button data-bs-toggle="modal" data-bs-target="#approvalAllModel" class="btn btn-outline-primary flex-1 me-2">Approve All</button>
+
+                    <div class="modal fade" id="approvalAllModel" tabindex="-1" aria-labelledby="vertical-center-modal"
+                        style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content modal-filled bg-light-primary">
+                                <div class="modal-body p-4">
+                                    <form action="{{ route('loan.approve_all') }}" method="post">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="text-center text-primary">
+                                            <h4 class="mt-2 text-primary">Are you sure to approve all ?</h4>
+                                            <p class="mt-3">
+                                                Please Ensure that you have read carefully the List of Terms and
+                                                Conditions
+                                            </p>
+                                            <button class="btn btn-light my-2">
+                                                Yes I'm sure
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                    </div>
+
                 </div>
                 <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
                     <thead>

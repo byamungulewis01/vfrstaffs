@@ -12,6 +12,7 @@ class SavingMember extends Model
         'user_id',
         'saving_id',
         'amount',
+        'status',
         'type',
     ];
     public function user()

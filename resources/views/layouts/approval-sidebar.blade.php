@@ -54,6 +54,26 @@
                         <span class="hide-menu">Monthly Loans</span>
                     </a>
                 </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.restructure']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.restructure']) ? 'active' : '' }}"
+                        href="{{ route('loan.restructure') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Restructuring Loans</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['income_expenses']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['income_expenses']) ? 'active' : '' }}"
+                        href="{{ route('income_expenses') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Income & Expenses</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="sidebar-item">

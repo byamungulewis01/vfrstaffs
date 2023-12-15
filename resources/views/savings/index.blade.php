@@ -31,7 +31,7 @@
                     </thead>
                     <tbody>
                     </tbody>
-                    
+
                 </table>
             </div>
         </div>
@@ -85,7 +85,7 @@
                                     };
                                     const formattedDate = new Intl.DateTimeFormat(
                                         'en-US', options).format(date);
-                                        if (row.saving_by === 'members') {
+                                        if (row.saving_by == null) {
                                             return '<span class="text-primary">' + formattedDate +
                                                 ' <span class="text-dark">Savings</span> </span>';
                                         } else {

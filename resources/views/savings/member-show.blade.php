@@ -26,7 +26,7 @@
                             <td>
                                 @php
                                     $withdraw = \App\Models\SavingMember::where('user_id', $id)
-                                        ->where('type', 'withdraw')
+                                        ->where('type', 'withdraw')->where('status', 'approved')
                                         ->sum('amount');
                                     $total = $user->total_amount - $withdraw;
                                     $footer_total = $total;

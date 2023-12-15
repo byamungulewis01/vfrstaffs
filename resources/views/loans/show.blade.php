@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Savings')
+@section('title', 'Loans')
 @section('css')
     <link rel="stylesheet" href="{{ asset('dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
 @endsection
@@ -110,13 +110,15 @@
                 <div class="card-body p-3">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="mb-0">All Transactions
-
                         </h4>
+                        @if ($loan->status == 'approved')
                         <div class="button-group">
-                            <button type="button" class="btn waves-effect waves-light btn-warning">
+                            <button data-bs-toggle="modal" data-bs-target="#restructure" type="button"
+                                class="btn waves-effect {{ $disable }} waves-light btn-warning">
                                 Restructure
                             </button>
-                            <button type="button" class="btn waves-effect waves-light btn-secondary">
+                            <button data-bs-toggle="modal" data-bs-target="#topup" type="button"
+                                class="btn waves-effect {{ $disable }} waves-light btn-secondary">
                                 Topup
                             </button>
                             <button data-bs-toggle="modal" data-bs-target="#addPayOff" type="button"
@@ -175,7 +177,8 @@
 
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-light-danger text-danger font-medium"
+                                                <button type="button"
+                                                    class="btn btn-light-danger text-danger font-medium"
                                                     data-bs-dismiss="modal">
                                                     Close
                                                 </button>
@@ -186,11 +189,11 @@
                                 </div>
                             </div>
                             <!-- /.modal -->
-                            <div class="modal fade" id="addPayOff" tabindex="-1" aria-labelledby="exampleModalLabel1">
+                            <div class="modal fade" id="addPayOff" tabindex="-1" aria-labelledby="exampleModalLabel2">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content p-3">
                                         <div class="modal-header d-flex align-items-center">
-                                            <h4 class="modal-title" id="exampleModalLabel1">
+                                            <h4 class="modal-title" id="exampleModalLabel2">
                                                 LOAN PAY OFF
                                             </h4>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -247,7 +250,97 @@
                             </div>
                             <!-- /.modal -->
 
+                            <div class="modal fade" id="topup" tabindex="-1" aria-labelledby="exampleModalLabel3">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content p-3">
+                                        <div class="modal-header d-flex align-items-center">
+                                            <h4 class="modal-title" id="exampleModalLabel3">
+                                                TOP UP
+                                            </h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('loan.topup', $loan->id) }}" method="POST">
+                                            <div class="modal-body">
+                                                @csrf
+
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="amount" class="control-label mb-2">Total
+                                                        Amount:</label>
+                                                    <input type="text" name="amount"
+                                                        placeholder="Amount/Frw"
+                                                        value="{{ old('amount') }}" class="form-control">
+                                                    @error('amount')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="instrument" class="control-label mb-2">Additional
+                                                        Instrument:</label>
+                                                    <input type="text" name="instrument"
+                                                        placeholder="Instrument"
+                                                        value="{{ old('instrument') }}" class="form-control">
+                                                    @error('instrument')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button"
+                                                    class="btn btn-light-danger text-danger font-medium"
+                                                    data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button class="btn btn-success"> Submit </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.modal -->
+                            <div class="modal fade" id="restructure" tabindex="-1" aria-labelledby="exampleModalLabel4">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content p-3">
+                                        <div class="modal-header d-flex align-items-center">
+                                            <h4 class="modal-title" id="exampleModalLabel4">
+                                                LOAN RESTRUCTURING
+                                            </h4>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{ route('loan.restructure', $loan->id) }}" method="POST">
+                                            <div class="modal-body">
+                                                @csrf
+
+                                                <div class="col-md-12">
+                                                    <input type="hidden" name="amount" value="0">
+                                                    <label for="instrument" class="control-label mb-2">Additional Instrument:</label>
+                                                    <input type="text" name="instrument"
+                                                        placeholder="Instrument"
+                                                        value="{{ old('instrument') }}" class="form-control">
+                                                    @error('instrument')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button"
+                                                    class="btn btn-light-danger text-danger font-medium"
+                                                    data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button class="btn btn-success"> Submit </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.modal -->
+
                         </div>
+                        @endif
                     </div>
                     <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
                         <thead>

@@ -5,18 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Saving extends Model
+class VsaAccount extends Model
 {
     use HasFactory;
     protected $fillable = [
         'amount',
-        'comment',
         'type',
-        'status',
         'user_id',
+        'source',
+        'comment',
         'saving_by',
     ];
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
 }

@@ -2,6 +2,7 @@
 @section('title', 'Members Savings')
 @section('css')
     <link rel="stylesheet" href="{{ asset('dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 @endsection
 @section('body')
     <div class="product-list">
@@ -33,8 +34,8 @@
 @section('script')
 
     <!-- ---------------------------------------------- -->
-    <script src="{{ asset('dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('dist/libs/datatables.net/js/dataTables.bootstrap5.min.js') }}"></script>
+  @include('layouts.datatable_js')
+
     <script>
         $(function() {
             $.ajax({
@@ -55,36 +56,37 @@
                         }, {
                             data: 'phone'
                         }, ],
-                        columnDefs: [
-
-                            {
-                                targets: 0,
-                                render: function(data, type, row, meta) {
-                                    return meta.row + meta.settings._iDisplayStart + 1;
-                                }
-                            },{
-                                targets: 4,
-                                render: function(data, type, row) {
-                                    return Number(row.savings).toLocaleString();
-                                }
-                            }, {
-                                targets: 5,
-                                render: function(data, type, row, meta) {
-                                    var difference = row.total_amount - row.total_withdrawn_amount;
-                                    return Number(difference).toLocaleString();
-                                }
-                            }, {
-                                targets: 6,
-                                render: function(data, type, row, meta) {
-                                    var route =
-                                        "{{ route('saving.showMember', ['id' => ':id']) }}";
-                                    route = route.replace(':id', row.id);
-                                    return `<a href=${route} class="btn btn-primary btn-sm">MS View</a>`;
-                                }
-                            },
-                        ],
-
+                        columnDefs: [{
+                            targets: 0,
+                            render: function(data, type, row, meta) {
+                                return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        }, {
+                            targets: 4,
+                            render: function(data, type, row) {
+                                return Number(row.savings).toLocaleString();
+                            }
+                        }, {
+                            targets: 5,
+                            render: function(data, type, row, meta) {
+                                var difference = row.total_amount - row
+                                    .total_withdrawn_amount;
+                                return Number(difference).toLocaleString();
+                            }
+                        }, {
+                            targets: 6,
+                            render: function(data, type, row, meta) {
+                                var route =
+                                    "{{ route('saving.showMember', ['id' => ':id']) }}";
+                                route = route.replace(':id', row.id);
+                                return `<a href=${route} class="btn btn-primary btn-sm">MS View</a>`;
+                            }
+                        }, ],
                         scrollX: true,
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        ],
                     });
                 }
             });

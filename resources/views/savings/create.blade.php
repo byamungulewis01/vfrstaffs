@@ -17,14 +17,17 @@
                             <div class="mb-4">
                                 <div style="display: none;" id="totalSavings">Total Savings: {{ $users->sum('savings') }}</div>
                                 <label for="exampleInputtext" class="form-label fw-semibold">Total Monthly Savings</label>
-                                <input type="text" name="amount" class="form-control" readonly id="exampleInputtext" value="{{ $users->sum('savings') }}">
+                                <input type="hidden" name="amount" class="form-control" readonly id="exampleInputtext"
+                                    value="{{ $users->sum('savings') }}">
+                                <input type="number" autocomplete="off" autofocus class="form-control" id="amount">
+
                             </div>
 
                         </div>
                         <div class="col-lg-8">
                             <div class="mb-4">
                                 <label for="exampleInputtext2" class="form-label fw-semibold">Comment</label>
-                                <input type="text" required name="comment" class="form-control" id="exampleInputtext2"
+                                <input type="text" required name="comment" autocomplete="off" class="form-control" id="exampleInputtext2"
                                     placeholder="Saving Comments .....">
                             </div>
 
@@ -32,7 +35,7 @@
                         <div class="col-12">
                             <div class="">
                                 <label for="exampleInputtext4" class="form-label fw-semibold">Member List</label>
-                                <table class="table align-middle text-nowrap mb-0" style="width: 100%">
+                                <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
@@ -55,9 +58,10 @@
                                                 </td>
                                                 <td>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" name="members[]" type="checkbox" checked
-                                                            value="{{ $user->id }},{{ $user->savings }}" data-savings="{{ $user->savings }}"
-                                                            id="check" onchange="updateTotalSavings(this)">
+                                                        <input class="form-check-input" name="members[]" type="checkbox"
+                                                            checked value="{{ $user->id }},{{ $user->savings }}"
+                                                            data-savings="{{ $user->savings }}" id="check"
+                                                            onchange="updateTotalSavings(this)">
 
                                                     </div>
                                                 </td>
@@ -69,7 +73,7 @@
                         </div>
                         <div class="col-12">
                             <div class="d-flex align-items-center justify-content-end mt-4 gap-3">
-                                <button class="btn btn-primary">Save</button>
+                                <button id="save_button" class="btn btn-primary disabled">Save</button>
                                 <a href="" class="btn bg-danger-subtle text-danger">Cancel</a>
                             </div>
                         </div>
@@ -90,6 +94,17 @@
     </script>
 
     <script>
+        $("#amount").on("input", function() {
+            var inputValue = $(this).val();
+            var totalAmount = $('#exampleInputtext').val()
+
+            if (inputValue == totalAmount) {
+                $('#save_button').removeClass('disabled');
+            } else {
+                $('#save_button').addClass('disabled');
+            }
+
+        });
         // Function to update total savings based on checkbox changes
         function updateTotalSavings(checkbox) {
             // Get the current total savings
@@ -108,6 +123,15 @@
             // Update the total savings display
             document.getElementById('totalSavings').innerText = 'Total Savings: ' + totalSavings.toFixed(2);
             $('#exampleInputtext').val(totalSavings);
+
+            var inputValue = $('#amount').val();
+            var totalAmount = $('#exampleInputtext').val();
+
+            if (inputValue == totalAmount) {
+                $('#save_button').removeClass('disabled');
+            } else {
+                $('#save_button').addClass('disabled');
+            }
         }
     </script>
 

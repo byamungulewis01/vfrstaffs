@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Loans')
+@section('title', 'Loans payment history')
 @section('css')
     <link rel="stylesheet" href="{{ asset('dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
 @endsection
@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-center mb-9">
-                    <h2>ACTIVE LOANS MANAGEMENT</h2>
+                    <h2>LOANS PAYEMENT HISTORY</h2>
 
                 </div>
                 <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
@@ -20,13 +20,9 @@
                             <th scope="col">Loan</th>
                             <th scope="col">Interest</th>
                             <th scope="col">Total (L+I)</th>
-                            <th scope="col">Terms</th>
-                            <th scope="col">Inst</th>
-                            <th scope="col">Payed</th>
-                            <th scope="col">Remain</th>
                             <th scope="col">Date</th>
-                            <th scope="col">LT</th>
-                            <th scope="col">ML View</th>
+                            <th scope="col">Approve By</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,7 +41,7 @@
     <script>
         $(function() {
             $.ajax({
-                url: "{{ route('loan.index') }}",
+                url: "{{ route('loan.history') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
@@ -63,17 +59,17 @@
                             }, {
                                 targets: 1,
                                 render: function(data, type, row) {
-                                    return row.user.regnumber;
+                                    return row.loan.user.regnumber;
                                 }
                             }, {
                                 targets: 2,
                                 render: function(data, type, row) {
-                                    return row.user.name;
+                                    return row.loan.user.name;
                                 }
                             }, {
                                 targets: 3,
                                 render: function(data, type, row) {
-                                    return row.loan;
+                                    return row.amount;
                                 }
                             }, {
                                 targets: 4,
@@ -84,49 +80,10 @@
                             {
                                 targets: 5,
                                 render: function(data, type, row) {
-                                    return row.loan + row.interest;
+                                    return row.amount + row.interest;
                                 }
                             }, {
                                 targets: 6,
-                                render: function(data, type, row) {
-                                    return row.installement;
-                                }
-                            }, {
-                                targets: 7,
-                                render: function(data, type, row) {
-                                    var total = row.loan + row.interest;
-                                    var rounded = Math.round(total / row.installement);
-                                    return rounded;
-                                }
-                            }, {
-                                targets: 8,
-                                render: function(data, type, row) {
-                                    var loanPays = row.loan_pays;
-                                    var sumOfAmounts = loanPays.reduce(function(
-                                        accumulator, currentValue) {
-                                        return accumulator + (currentValue
-                                            .amount + currentValue
-                                            .interest);
-                                    }, 0);
-                                    return sumOfAmounts;
-                                }
-                            }, {
-                                targets: 9,
-                                render: function(data, type, row) {
-                                    var total = row.loan + row.interest;
-                                    var loanPays = row.loan_pays;
-
-                                    var sumOfAmounts = loanPays.reduce(function(
-                                        accumulator, currentValue) {
-                                        return accumulator + (currentValue
-                                            .amount + currentValue
-                                            .interest);
-                                    }, 0);
-                                    return total - sumOfAmounts;
-
-                                }
-                            }, {
-                                targets: 10,
                                 render: function(data, type, row) {
                                     const originalDate = new Date(row.created_at);
 
@@ -141,16 +98,16 @@
                                     return formattedDate;
                                 }
                             }, {
-                                targets: 11,
+                                targets: 7,
                                 render: function(data, type, row) {
-                                    return row.loan_setting.rate + ' %';
+                                    return row.approval.name;
                                 }
                             }, {
-                                targets: 12,
+                                targets: 8,
                                 render: function(data, type, row) {
                                     var route =
                                         "{{ route('loan.show', ['id' => ':id']) }}";
-                                    route = route.replace(':id', row.id);
+                                    route = route.replace(':id', row.loan.id);
                                     return `<a href="${route}" class="btn btn-primary btn-sm">View</a>`;
                                 }
                             }
@@ -163,4 +120,5 @@
             });
         });
     </script>
+
 @endsection

@@ -63,7 +63,27 @@
                 <span class="hide-menu">Loans</span>
             </a>
             <ul aria-expanded="false"
-                class="collapse first-level {{ in_array(Route::currentRouteName(), ['loan.index', 'loan.show']) ? 'in' : '' }}">
+                class="collapse first-level {{ in_array(Route::currentRouteName(), ['loan.create','loan.index', 'loan.show','loan.history','loan.payment']) ? 'in' : '' }}">
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.create']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.create']) ? 'active' : '' }}"
+                        href="{{ route('loan.create') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Loan Request</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.payment']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.payment']) ? 'active' : '' }}"
+                        href="{{ route('loan.payment') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Loan Payment</span>
+                    </a>
+                </li>
                 <li
                     class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.index', 'loan.show']) ? 'active' : '' }}">
                     <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.index', 'loan.show']) ? 'active' : '' }}"
@@ -71,7 +91,7 @@
                         <div class="round-16 d-flex align-items-center justify-content-center">
                             <i class="ti ti-circle"></i>
                         </div>
-                        <span class="hide-menu">Monthly Active Loan</span>
+                        <span class="hide-menu">Active Loan</span>
                     </a>
                 </li>
                 <li
@@ -81,12 +101,64 @@
                         <div class="round-16 d-flex align-items-center justify-content-center">
                             <i class="ti ti-circle"></i>
                         </div>
-                        <span class="hide-menu">Monthly Closed Loan</span>
+                        <span class="hide-menu">Closed Loan</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.history']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.history']) ? 'active' : '' }}"
+                        href="{{ route('loan.history') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Loan History</span>
                     </a>
                 </li>
 
             </ul>
         </li>
+        <li class="sidebar-item">
+            <a class="sidebar-link has-arrow" href="#loans" aria-expanded="false">
+                <span class="d-flex">
+                    <i class="ti ti-currency-dollar"></i>
+                </span>
+                <span class="hide-menu">I&E Statements</span>
+            </a>
+            <ul aria-expanded="false"
+                class="collapse first-level {{ in_array(Route::currentRouteName(), ['income_expences.index']) ? 'in' : '' }}">
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['income_expences.index']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['income_expences.index']) ? 'active' : '' }}"
+                        href="{{ route('income_expences.index') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Add I&E Statements</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['income_expences.monthly']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['income_expences.monthly']) ? 'active' : '' }}"
+                        href="{{ route('income_expences.monthly') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">View Monthly I&E</span>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+
+        <li class="sidebar-item">
+            <a class="sidebar-link" href="{{ route('vsa_account') }}" aria-expanded="false">
+              <span class="d-flex">
+                <i class="ti ti-qrcode"></i>
+              </span>
+              <span class="hide-menu">VSA Account</span>
+            </a>
+          </li>
+
         <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="#users" aria-expanded="false">
                 <span class="d-flex">

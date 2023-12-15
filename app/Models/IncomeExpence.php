@@ -5,18 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Saving extends Model
+class IncomeExpence extends Model
 {
     use HasFactory;
     protected $fillable = [
         'amount',
-        'comment',
         'type',
-        'status',
+        'status', //requested,approved and rejected,
         'user_id',
-        'saving_by',
+        'source',
+        'comment',
     ];
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
 }
