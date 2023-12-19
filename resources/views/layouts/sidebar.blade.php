@@ -44,14 +44,6 @@
                         <span class="hide-menu">Members Savings</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('saving.create') }}">
-                        <div class="round-16 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-circle"></i>
-                        </div>
-                        <span class="hide-menu">Create Savings</span>
-                    </a>
-                </li>
 
             </ul>
         </li>
@@ -63,9 +55,8 @@
                 <span class="hide-menu">Loans</span>
             </a>
             <ul aria-expanded="false"
-                class="collapse first-level {{ in_array(Route::currentRouteName(), ['loan.create','loan.index', 'loan.show','loan.history','loan.payment']) ? 'in' : '' }}">
-                <li
-                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.create']) ? 'active' : '' }}">
+                class="collapse first-level {{ in_array(Route::currentRouteName(), ['loan.create', 'loan.index', 'loan.show', 'loan.history', 'loan.payment']) ? 'in' : '' }}">
+                <li class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.create']) ? 'active' : '' }}">
                     <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.create']) ? 'active' : '' }}"
                         href="{{ route('loan.create') }}">
                         <div class="round-16 d-flex align-items-center justify-content-center">
@@ -74,8 +65,7 @@
                         <span class="hide-menu">Loan Request</span>
                     </a>
                 </li>
-                <li
-                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.payment']) ? 'active' : '' }}">
+                <li class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.payment']) ? 'active' : '' }}">
                     <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.payment']) ? 'active' : '' }}"
                         href="{{ route('loan.payment') }}">
                         <div class="round-16 d-flex align-items-center justify-content-center">
@@ -104,8 +94,7 @@
                         <span class="hide-menu">Closed Loan</span>
                     </a>
                 </li>
-                <li
-                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.history']) ? 'active' : '' }}">
+                <li class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.history']) ? 'active' : '' }}">
                     <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.history']) ? 'active' : '' }}"
                         href="{{ route('loan.history') }}">
                         <div class="round-16 d-flex align-items-center justify-content-center">
@@ -152,12 +141,12 @@
 
         <li class="sidebar-item">
             <a class="sidebar-link" href="{{ route('vsa_account') }}" aria-expanded="false">
-              <span class="d-flex">
-                <i class="ti ti-qrcode"></i>
-              </span>
-              <span class="hide-menu">VSA Account</span>
+                <span class="d-flex">
+                    <i class="ti ti-qrcode"></i>
+                </span>
+                <span class="hide-menu">VSA Account</span>
             </a>
-          </li>
+        </li>
 
         <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="#users" aria-expanded="false">
@@ -172,14 +161,6 @@
                         <div class="round-16 d-flex align-items-center justify-content-center">
                             <i class="ti ti-circle"></i>
                         </div>
-                        <span class="hide-menu">All Members</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('user.active') }}">
-                        <div class="round-16 d-flex align-items-center justify-content-center">
-                            <i class="ti ti-circle"></i>
-                        </div>
                         <span class="hide-menu">Active Members</span>
                     </a>
                 </li>
@@ -189,6 +170,14 @@
                             <i class="ti ti-circle"></i>
                         </div>
                         <span class="hide-menu">Inactive Members</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('user.all') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">All Members</span>
                     </a>
                 </li>
             </ul>
@@ -218,14 +207,14 @@
                         <span class="hide-menu">Login History</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
+                {{-- <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('setting.systemHistory') }}">
                         <div class="round-16 d-flex align-items-center justify-content-center">
                             <i class="ti ti-circle"></i>
                         </div>
                         <span class="hide-menu">System History</span>
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </li>
 

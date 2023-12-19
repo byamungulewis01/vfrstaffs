@@ -10,9 +10,10 @@
                 <div class="d-flex justify-content-between align-items-center mb-9">
                     <h2>SAVINGS MANAGEMENT</h2>
                     @if (auth()->user()->role == '0')
-                    <div>
-                        <a href="{{ route('saving.create') }}" class="btn btn-outline-primary flex-1 me-2">Add All Savings</a>
-                    </div>
+                        <div>
+                            <a href="{{ route('saving.create') }}" class="btn btn-outline-primary flex-1 me-2">Add All
+                                Savings</a>
+                        </div>
                     @endif
                 </div>
                 <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
@@ -33,6 +34,55 @@
                     </tbody>
 
                 </table>
+                <div id="loadingIndicator" style="display: none;" class="py-6">
+                    <div class="card-body">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="spinner-grow spinner-grow-sm" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                      </div>
+                </div>
             </div>
         </div>
     </div>
@@ -45,11 +95,13 @@
     <script src="{{ asset('dist/libs/datatables.net/js/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         $(function() {
+            $('#loadingIndicator').show();
             $.ajax({
                 url: "{{ route('saving.index') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
+                    $('#loadingIndicator').hide();
                     $('#datatable').DataTable({
                         data: data,
                         columns: [{
@@ -85,12 +137,13 @@
                                     };
                                     const formattedDate = new Intl.DateTimeFormat(
                                         'en-US', options).format(date);
-                                        if (row.saving_by == null) {
-                                            return '<span class="text-primary">' + formattedDate +
-                                                ' <span class="text-dark">Savings</span> </span>';
-                                        } else {
-                                            return 'MST';
-                                        }
+                                    if (row.saving_by == null) {
+                                        return '<span class="text-primary">' +
+                                            formattedDate +
+                                            ' <span class="text-dark">Savings</span> </span>';
+                                    } else {
+                                        return 'MST';
+                                    }
                                 }
                             }, {
                                 targets: 2,
@@ -136,7 +189,8 @@
                             }, {
                                 targets: 8,
                                 render: function(data, type, row) {
-                                    var route ="{{ route('saving.show', ['id' => ':id']) }}";
+                                    var route =
+                                        "{{ route('saving.show', ['id' => ':id']) }}";
                                     route = route.replace(':id', row.id);
                                     return `<a class="btn btn-sm btn-primary" href="${route}"> View</a>`;
                                 }
@@ -146,6 +200,13 @@
                         order: [],
 
                     });
+                },
+                error: function() {
+                    // Hide loading indicator on error (if needed)
+                    $('#loadingIndicator').hide();
+
+                    // Handle error if necessary
+                    console.error('Error fetching data');
                 }
             });
         });

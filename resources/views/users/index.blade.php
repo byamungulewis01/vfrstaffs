@@ -10,8 +10,10 @@
                 <div class="d-flex justify-content-between align-items-center mb-9">
                     <h2>VFC STAFF ASSOCIATION MEMBERS</h2>
                     <div>
-                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addModel"
-                            class="btn btn-outline-primary flex-1 me-2">Add User</a>
+                        @if (auth()->user()->role == '0')
+                            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#addModel"
+                                class="btn btn-outline-primary flex-1 me-2">Add User</a>
+                        @endif
                         <div class="modal fade" id="addModel" tabindex="-1" aria-labelledby="exampleModalLabel1">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content p-3">
@@ -37,8 +39,8 @@
                                             <div class="mb-3">
                                                 <label for="username" class="control-label mb-2">Username:</label>
                                                 <input type="text" name="username" value="{{ old('username') }}"
-                                                    class="form-control" placeholder="Enter Username"
-                                                    required autocomplete="off">
+                                                    class="form-control" placeholder="Enter Username" required
+                                                    autocomplete="off">
                                                 @error('username')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -48,8 +50,7 @@
                                                     <label for="phone" class="control-label mb-2">Phone:</label>
                                                     <input type="text" minlength="10" maxlength="10" name="phone"
                                                         value="{{ old('phone') }}" class="form-control phone"
-                                                         placeholder="Enter Phone" required
-                                                        autocomplete="off">
+                                                        placeholder="Enter Phone" required autocomplete="off">
                                                     @error('phone')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -73,8 +74,8 @@
                                                 <div class="col-md-6">
                                                     <label for="savings" class="control-label mb-2">Savings:</label>
                                                     <input type="number" min="0" name="savings"
-                                                        value="{{ old('savings') }}" class="form-control phone" placeholder="Enter Savings" required
-                                                        autocomplete="off">
+                                                        value="{{ old('savings') }}" class="form-control phone"
+                                                        placeholder="Enter Savings" required autocomplete="off">
                                                     @error('savings')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -123,7 +124,9 @@
                             <th scope="col">Department</th>
                             <th scope="col">Monthly Savings</th>
                             <th scope="col">Date</th>
+                            @if (auth()->user()->role == '0')
                             <th scope="col">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -302,9 +305,7 @@
                             data: 'savings'
                         }, {
                             data: 'created_at'
-                        }, {
-                            data: ''
-                        }, ],
+                        },  ],
                         columnDefs: [
 
                             {
@@ -330,7 +331,9 @@
                                         'en-US', options).format(date);
                                     return '<span>' + formattedDate + '</span>';
                                 }
-                            }, {
+                            },
+                            @if (auth()->user()->role == '0')
+                             {
                                 targets: 7,
                                 render: function(data, type, row, meta) {
 
@@ -341,6 +344,7 @@
                                 data-status="${row.status}" data-department="${row.department_id}">Edit</span></a>`;
                                 }
                             }
+                            @endif
                         ],
 
                         scrollX: true,

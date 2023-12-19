@@ -140,13 +140,16 @@ class ApprovalController extends Controller
         $loan_pays = (int) LoanPay::where('loan_id', $loanPay->loan_id)->sum('amount');
 
         $remain_interest = Loan::find($loanPay->loan_id)->interest - $loanPay->interest;
+        $paid_loan = Loan::find($loanPay->loan_id)->p_loan + $loanPay->loan;
+        $paid_interest = Loan::find($loanPay->loan_id)->p_interest + $loanPay->interest;
 
         if ($loan <= $loan_pays) {
             LoanPay::findorfail($id)->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
-            Loan::findorfail($loanPay->loan_id)->update(['loan_status' => 'closed', 'remain_interest' => 0]);
+            Loan::findorfail($loanPay->loan_id)->update(['loan_status' => 'closed',
+                'remain_interest' => 0, 'p_loan' => $paid_loan, 'p_interest' => $paid_interest]);
         } else {
             LoanPay::findorfail($id)->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
-            Loan::findorfail($loanPay->loan_id)->update(['remain_interest' => $remain_interest]);
+            Loan::findorfail($loanPay->loan_id)->update(['remain_interest' => $remain_interest, 'p_loan' => $paid_loan, 'p_interest' => $paid_interest]);
 
         }
         IncomeExpence::create([

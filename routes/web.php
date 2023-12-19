@@ -58,10 +58,12 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::controller(UserController::class)->prefix('members')->name('user.')->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('/active', 'active')->name('active');
+        Route::get('/all', 'all')->name('all');
         Route::get('/inactive', 'inactive')->name('inactive');
         Route::post('/', 'store')->name('store');
         Route::put('/{id}', 'update')->name('update');
+        Route::put('/activate/{id}', 'activate')->name('activate');
+        Route::put('/disactivate/{id}', 'disactivate')->name('disactivate');
     });
 
     Route::controller(SavingController::class)->prefix('savings')->name('saving.')->group(function () {

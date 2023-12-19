@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Inactive Members')
+@section('title', 'All Members')
 @section('css')
     <link rel="stylesheet" href="{{ asset('dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
 @endsection
@@ -21,9 +21,7 @@
                             <th scope="col">Department</th>
                             <th scope="col">Monthly Savings</th>
                             <th scope="col">Date</th>
-                            @if (auth()->user()->role == '0')
                             <th scope="col"></th>
-                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -56,6 +54,30 @@
             <!-- /.modal-content -->
         </div>
     </div>
+    <div class="modal fade" id="disactiveModel" tabindex="-1" aria-labelledby="vertical-center-modal"
+        style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content modal-filled bg-light-danger">
+                <div class="modal-body p-4">
+                    <form id="disactivateUser" method="post">
+                        @csrf
+                        @method('PUT')
+                        <div class="text-center text-danger">
+                            <h4 class="mt-2 text-danger">You Are about to Disactivate</h4>
+                            <p class="mt-3">
+                                Please Ensure that you have read carefully the List of Terms and Conditions
+                            </p>
+                            <button class="btn btn-light my-2">
+                                Yes I'm sure
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
 
 @endsection
 @section('script')
@@ -66,12 +88,11 @@
     <script>
         $(function() {
             $.ajax({
-                url: "{{ route('user.inactive') }}",
+                url: "{{ route('user.all') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
                     $('#datatable').DataTable({
-
                         data: data,
                         columns: [{
                             data: ''
@@ -113,18 +134,24 @@
                                         'en-US', options).format(date);
                                     return '<span>' + formattedDate + '</span>';
                                 }
-                            },
-                            @if (auth()->user()->role == '0')
-                             {
+                            }, {
                                 targets: 7,
                                 render: function(data, type, row, meta) {
 
-                                    return `<a href="" data-bs-toggle="modal" data-bs-target="#activeModel"
-                                class="btn btn-sm btn-outline-primary activeUser">
-                                <span data-id="${row.id}">Active</span></a>`;
+                                    if (row.status == '0') {
+
+                                        return `<a href="" data-bs-toggle="modal" data-bs-target="#activeModel"
+                                    class="btn btn-sm btn-outline-primary activeUser">
+                                    <span data-id="${row.id}">Active</span></a>`;
+                                    } else {
+                                        return `<a href="" data-bs-toggle="modal" data-bs-target="#disactiveModel"
+                                    class="btn btn-sm btn-outline-danger disactiveUser">
+                                    <span data-id="${row.id}">Disactive</span></a>`;
+
+                                    }
+
                                 }
                             }
-                            @endif
                         ],
 
                         scrollX: true,
@@ -139,6 +166,15 @@
             var route = "{{ route('user.activate', ['id' => ':id']) }}";
             route = route.replace(':id', id);
             $('#activateUser').attr('action', route);
+
+        });
+    </script>
+    <script>
+        $(document).on('click', '.disactiveUser', function() {
+            var id = $(this).find('span').data('id');
+            var route = "{{ route('user.disactivate', ['id' => ':id']) }}";
+            route = route.replace(':id', id);
+            $('#disactivateUser').attr('action', route);
 
         });
     </script>

@@ -109,5 +109,90 @@
             </ul>
         </li>
 
+        <li class="sidebar-item">
+            <a class="sidebar-link has-arrow" href="#loans" aria-expanded="false">
+                <span class="d-flex">
+                    <i class="ti ti-currency-dollar"></i>
+                </span>
+                <span class="hide-menu">Loans</span>
+            </a>
+            <ul aria-expanded="false"
+                class="collapse first-level {{ in_array(Route::currentRouteName(), ['loan.create', 'loan.index', 'loan.show', 'loan.history', 'loan.payment']) ? 'in' : '' }}">
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.index', 'loan.show']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.index', 'loan.show']) ? 'active' : '' }}"
+                        href="{{ route('loan.index') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Active Loan</span>
+                    </a>
+                </li>
+                <li
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.loan_closed']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.loan_closed']) ? 'active' : '' }}"
+                        href="{{ route('loan.loan_closed') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Closed Loan</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.history']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.history']) ? 'active' : '' }}"
+                        href="{{ route('loan.history') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Loan History</span>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <li class="sidebar-item">
+            <a class="sidebar-link has-arrow" href="#users" aria-expanded="false">
+                <span class="d-flex">
+                    <i class="ti ti-users"></i>
+                </span>
+                <span class="hide-menu">Members</span>
+            </a>
+            <ul aria-expanded="false" class="collapse first-level">
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('user.index') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Active Members</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('user.inactive') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Inactive Members</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="sidebar-item">
+            <a class="sidebar-link" href="{{ route('income_expences.monthly') }}" aria-expanded="false">
+                <span class="d-flex">
+                    <i class="ti ti-currency-dollar"></i>
+                </span>
+                <span class="hide-menu">I&E Statements</span>
+            </a>
+        </li>
+
+        <li class="sidebar-item">
+            <a class="sidebar-link" href="{{ route('vsa_account') }}" aria-expanded="false">
+                <span class="d-flex">
+                    <i class="ti ti-qrcode"></i>
+                </span>
+                <span class="hide-menu">VSA Account</span>
+            </a>
+        </li>
     </ul>
 </nav>

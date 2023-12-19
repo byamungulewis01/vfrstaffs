@@ -17,6 +17,8 @@ class Loan extends Model
         'status',
         'user_id',
         'loan_type',
+        'p_loan',
+        'p_interest',
         'remain_interest',
     ];
 

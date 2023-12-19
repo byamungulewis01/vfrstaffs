@@ -2,6 +2,8 @@
 @section('title', 'Loans')
 @section('css')
     <link rel="stylesheet" href="{{ asset('dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
 @endsection
 @section('body')
     <div class="product-list">
@@ -111,235 +113,245 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="mb-0">All Transactions
                         </h4>
-                        @if ($loan->status == 'approved')
-                        <div class="button-group">
-                            <button data-bs-toggle="modal" data-bs-target="#restructure" type="button"
-                                class="btn waves-effect {{ $disable }} waves-light btn-warning">
-                                Restructure
-                            </button>
-                            <button data-bs-toggle="modal" data-bs-target="#topup" type="button"
-                                class="btn waves-effect {{ $disable }} waves-light btn-secondary">
-                                Topup
-                            </button>
-                            <button data-bs-toggle="modal" data-bs-target="#addPayOff" type="button"
-                                class="btn waves-effect {{ $disable }} waves-light btn-success">
-                                Pay Off
-                            </button>
-                            <button data-bs-toggle="modal" data-bs-target="#addQCL" type="button"
-                                class="btn waves-effect {{ $disable }} waves-light btn-info">
-                                Add QCL
-                            </button>
-                            <div class="modal fade" id="addQCL" tabindex="-1" aria-labelledby="exampleModalLabel1">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content p-3">
-                                        <div class="modal-header d-flex align-items-center">
-                                            <h4 class="modal-title" id="exampleModalLabel1">
-                                                QUICK COVER LOAN
-                                            </h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <form action="{{ route('loan.storeQCL', $loan->id) }}" method="POST">
-                                            <div class="modal-body">
-                                                @csrf
-                                                @php
-                                                    $_loan = round($loan->loan / $loan->installement);
-                                                    $interest = round($loan->interest / $loan->installement);
-                                                    $total = $_loan + $interest;
-                                                @endphp
-                                                <div class="mb-3">
-                                                    <label for="total" class="control-label mb-2">Total monthly
-                                                        loan:</label>
-                                                    <input type="text" readonly name="total"
-                                                        value="{{ $total }}" class="form-control">
+                        @if (auth()->user()->role == '0')
+                            @if ($loan->status == 'approved')
+                                <div class="button-group">
+                                    <button data-bs-toggle="modal" data-bs-target="#restructure" type="button"
+                                        class="btn waves-effect {{ $disable }} waves-light btn-warning">
+                                        Restructure
+                                    </button>
+                                    <button data-bs-toggle="modal" data-bs-target="#topup" type="button"
+                                        class="btn waves-effect {{ $disable }} waves-light btn-secondary">
+                                        Topup
+                                    </button>
+                                    <button data-bs-toggle="modal" data-bs-target="#addPayOff" type="button"
+                                        class="btn waves-effect {{ $disable }} waves-light btn-success">
+                                        Pay Off
+                                    </button>
+                                    <button data-bs-toggle="modal" data-bs-target="#addQCL" type="button"
+                                        class="btn waves-effect {{ $disable }} waves-light btn-info">
+                                        Add QCL
+                                    </button>
+                                    <div class="modal fade" id="addQCL" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel1">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content p-3">
+                                                <div class="modal-header d-flex align-items-center">
+                                                    <h4 class="modal-title" id="exampleModalLabel1">
+                                                        QUICK COVER LOAN
+                                                    </h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                                 </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-6">
-                                                        <label for="amount" class="control-label mb-2">Loan:</label>
-                                                        <input type="text" readonly name="amount"
-                                                            value="{{ $_loan }}" class="form-control">
+                                                <form action="{{ route('loan.storeQCL', $loan->id) }}" method="POST">
+                                                    <div class="modal-body">
+                                                        @csrf
+                                                        @php
+                                                            $_loan = round($loan->loan / $loan->installement);
+                                                            $interest = round($loan->interest / $loan->installement);
+                                                            $total = $_loan + $interest;
+                                                        @endphp
+                                                        <div class="mb-3">
+                                                            <label for="total" class="control-label mb-2">Total monthly
+                                                                loan:</label>
+                                                            <input type="text" readonly name="total"
+                                                                value="{{ $total }}" class="form-control">
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-6">
+                                                                <label for="amount"
+                                                                    class="control-label mb-2">Loan:</label>
+                                                                <input type="text" readonly name="amount"
+                                                                    value="{{ $_loan }}" class="form-control">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label for="interest" class="control-label mb-2">Total
+                                                                    Interest:</label>
+                                                                <input type="text" readonly name="interest"
+                                                                    value="{{ $interest }}" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="comment"
+                                                                class="control-label mb-2">Comment:</label>
+                                                            <textarea name="comment" class="form-control" rows="2" placeholder="Text Here..."></textarea>
+                                                            @error('comment')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </div>
+
+
                                                     </div>
-                                                    <div class="col-6">
-                                                        <label for="interest" class="control-label mb-2">Total
-                                                            Interest:</label>
-                                                        <input type="text" readonly name="interest"
-                                                            value="{{ $interest }}" class="form-control">
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                            class="btn btn-light-danger text-danger font-medium"
+                                                            data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button class="btn btn-success"> Submit </button>
                                                     </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="comment" class="control-label mb-2">Comment:</label>
-                                                    <textarea name="comment" class="form-control" rows="2" placeholder="Text Here..."></textarea>
-                                                    @error('comment')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-
-
+                                                </form>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button"
-                                                    class="btn btn-light-danger text-danger font-medium"
-                                                    data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
-                                                <button class="btn btn-success"> Submit </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.modal -->
-                            <div class="modal fade" id="addPayOff" tabindex="-1" aria-labelledby="exampleModalLabel2">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content p-3">
-                                        <div class="modal-header d-flex align-items-center">
-                                            <h4 class="modal-title" id="exampleModalLabel2">
-                                                LOAN PAY OFF
-                                            </h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
                                         </div>
-                                        <form action="{{ route('loan.storePayOff', $loan->id) }}" method="POST">
-                                            <div class="modal-body">
-                                                @csrf
-                                                @php
-                                                    $_loan = $loan->loan - $loan_pays->sum('amount');
-                                                    $interest = $loan->interest - $loan_pays->sum('interest');
-                                                    $total = $_loan + $interest * 0.5;
-                                                @endphp
-                                                <div class="mb-3">
-                                                    <label for="total" class="control-label mb-2">Total monthly
-                                                        loan:</label>
-                                                    <input type="text" readonly name="total"
-                                                        value="{{ $total }}" class="form-control">
+                                    </div>
+                                    <!-- /.modal -->
+                                    <div class="modal fade" id="addPayOff" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel2">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content p-3">
+                                                <div class="modal-header d-flex align-items-center">
+                                                    <h4 class="modal-title" id="exampleModalLabel2">
+                                                        LOAN PAY OFF
+                                                    </h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                                 </div>
-                                                <div class="row mb-3">
-                                                    <div class="col-6">
-                                                        <label for="amount" class="control-label mb-2">Loan:</label>
-                                                        <input type="text" readonly name="amount"
-                                                            value="{{ $_loan }}" class="form-control">
+                                                <form action="{{ route('loan.storePayOff', $loan->id) }}" method="POST">
+                                                    <div class="modal-body">
+                                                        @csrf
+                                                        @php
+                                                            $_loan = $loan->loan - $loan_pays->sum('amount');
+                                                            $interest = $loan->interest - $loan_pays->sum('interest');
+                                                            $total = $_loan + $interest * 0.5;
+                                                        @endphp
+                                                        <div class="mb-3">
+                                                            <label for="total" class="control-label mb-2">Total monthly
+                                                                loan:</label>
+                                                            <input type="text" readonly name="total"
+                                                                value="{{ $total }}" class="form-control">
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-6">
+                                                                <label for="amount"
+                                                                    class="control-label mb-2">Loan:</label>
+                                                                <input type="text" readonly name="amount"
+                                                                    value="{{ $_loan }}" class="form-control">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label for="interest" class="control-label mb-2">Total
+                                                                    Interest:</label>
+                                                                <input type="text" readonly name="interest"
+                                                                    value="{{ $interest * 0.5 }}" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="comment"
+                                                                class="control-label mb-2">Comment:</label>
+                                                            <textarea name="comment" class="form-control" rows="2" placeholder="Text Here..."></textarea>
+                                                            @error('comment')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </div>
+
+
                                                     </div>
-                                                    <div class="col-6">
-                                                        <label for="interest" class="control-label mb-2">Total
-                                                            Interest:</label>
-                                                        <input type="text" readonly name="interest"
-                                                            value="{{ $interest * 0.5 }}" class="form-control">
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                            class="btn btn-light-danger text-danger font-medium"
+                                                            data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button class="btn btn-success"> Submit </button>
                                                     </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="comment" class="control-label mb-2">Comment:</label>
-                                                    <textarea name="comment" class="form-control" rows="2" placeholder="Text Here..."></textarea>
-                                                    @error('comment')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-
-
+                                                </form>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button"
-                                                    class="btn btn-light-danger text-danger font-medium"
-                                                    data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
-                                                <button class="btn btn-success"> Submit </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.modal -->
-
-                            <div class="modal fade" id="topup" tabindex="-1" aria-labelledby="exampleModalLabel3">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content p-3">
-                                        <div class="modal-header d-flex align-items-center">
-                                            <h4 class="modal-title" id="exampleModalLabel3">
-                                                TOP UP
-                                            </h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
                                         </div>
-                                        <form action="{{ route('loan.topup', $loan->id) }}" method="POST">
-                                            <div class="modal-body">
-                                                @csrf
-
-                                                <div class="col-md-12 mb-3">
-                                                    <label for="amount" class="control-label mb-2">Total
-                                                        Amount:</label>
-                                                    <input type="text" name="amount"
-                                                        placeholder="Amount/Frw"
-                                                        value="{{ old('amount') }}" class="form-control">
-                                                    @error('amount')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <label for="instrument" class="control-label mb-2">Additional
-                                                        Instrument:</label>
-                                                    <input type="text" name="instrument"
-                                                        placeholder="Instrument"
-                                                        value="{{ old('instrument') }}" class="form-control">
-                                                    @error('instrument')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button"
-                                                    class="btn btn-light-danger text-danger font-medium"
-                                                    data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
-                                                <button class="btn btn-success"> Submit </button>
-                                            </div>
-                                        </form>
                                     </div>
-                                </div>
-                            </div>
-                            <!-- /.modal -->
-                            <div class="modal fade" id="restructure" tabindex="-1" aria-labelledby="exampleModalLabel4">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content p-3">
-                                        <div class="modal-header d-flex align-items-center">
-                                            <h4 class="modal-title" id="exampleModalLabel4">
-                                                LOAN RESTRUCTURING
-                                            </h4>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                    <!-- /.modal -->
+
+                                    <div class="modal fade" id="topup" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel3">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content p-3">
+                                                <div class="modal-header d-flex align-items-center">
+                                                    <h4 class="modal-title" id="exampleModalLabel3">
+                                                        TOP UP
+                                                    </h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('loan.topup', $loan->id) }}" method="POST">
+                                                    <div class="modal-body">
+                                                        @csrf
+
+                                                        <div class="col-md-12 mb-3">
+                                                            <label for="amount" class="control-label mb-2">Total
+                                                                Amount:</label>
+                                                            <input type="text" name="amount" placeholder="Amount/Frw"
+                                                                value="{{ old('amount') }}" class="form-control">
+                                                            @error('amount')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <label for="instrument" class="control-label mb-2">Additional
+                                                                Instrument:</label>
+                                                            <input type="text" name="instrument"
+                                                                placeholder="Instrument" value="{{ old('instrument') }}"
+                                                                class="form-control">
+                                                            @error('instrument')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                            class="btn btn-light-danger text-danger font-medium"
+                                                            data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button class="btn btn-success"> Submit </button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
-                                        <form action="{{ route('loan.restructure', $loan->id) }}" method="POST">
-                                            <div class="modal-body">
-                                                @csrf
-
-                                                <div class="col-md-12">
-                                                    <input type="hidden" name="amount" value="0">
-                                                    <label for="instrument" class="control-label mb-2">Additional Instrument:</label>
-                                                    <input type="text" name="instrument"
-                                                        placeholder="Instrument"
-                                                        value="{{ old('instrument') }}" class="form-control">
-                                                    @error('instrument')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button"
-                                                    class="btn btn-light-danger text-danger font-medium"
-                                                    data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
-                                                <button class="btn btn-success"> Submit </button>
-                                            </div>
-                                        </form>
                                     </div>
-                                </div>
-                            </div>
-                            <!-- /.modal -->
+                                    <!-- /.modal -->
+                                    <div class="modal fade" id="restructure" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel4">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content p-3">
+                                                <div class="modal-header d-flex align-items-center">
+                                                    <h4 class="modal-title" id="exampleModalLabel4">
+                                                        LOAN RESTRUCTURING
+                                                    </h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('loan.restructure', $loan->id) }}" method="POST">
+                                                    <div class="modal-body">
+                                                        @csrf
 
-                        </div>
+                                                        <div class="col-md-12">
+                                                            <input type="hidden" name="amount" value="0">
+                                                            <label for="instrument" class="control-label mb-2">Additional
+                                                                Instrument:</label>
+                                                            <input type="text" name="instrument"
+                                                                placeholder="Instrument" value="{{ old('instrument') }}"
+                                                                class="form-control">
+                                                            @error('instrument')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                            class="btn btn-light-danger text-danger font-medium"
+                                                            data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button class="btn btn-success"> Submit </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal -->
+
+                                </div>
+                            @endif
                         @endif
                     </div>
                     <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
@@ -396,12 +408,19 @@
 @endsection
 @section('script')
 
-    <!-- ---------------------------------------------- -->
-    <script src="{{ asset('dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('dist/libs/datatables.net/js/dataTables.bootstrap5.min.js') }}"></script>
+    @include('layouts.datatable_js')
+
     <script>
         $(function() {
-            $('#datatable').DataTable();
+            $('#datatable').DataTable({
+                scrollX: true,
+                order: [],
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+
+            });
         });
     </script>
 @endsection

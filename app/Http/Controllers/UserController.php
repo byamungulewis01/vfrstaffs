@@ -13,22 +13,22 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return response()->json(User::with(['department'])->get());
+            return response()->json(User::where('status', '1')->with(['department'])->get());
         }
         $departments = Department::orderByDesc('id')->get();
         return view('users.index', compact('departments'));
     }
-    public function active(Request $request)
+    public function all(Request $request)
     {
         if ($request->ajax()) {
-            return response()->json(User::where('status','1')->with(['department'])->get());
+            return response()->json(User::with(['department'])->get());
         }
-        return view('users.active');
+        return view('users.all');
     }
     public function inactive(Request $request)
     {
         if ($request->ajax()) {
-            return response()->json(User::where('status','0')->with(['department'])->get());
+            return response()->json(User::where('status', '0')->with(['department'])->get());
         }
         return view('users.inactive');
     }
@@ -72,6 +72,26 @@ class UserController extends Controller
         try {
             User::find($id)->update($request->all());
             return back()->with('success', 'User Updated Succesfully');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('error', 'some thing went wrong');
+        }
+    }
+    public function activate($id)
+    {
+        try {
+            User::find($id)->update(['status' => '1']);
+            return back()->with('success', 'User Activated Succesfully');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('error', 'some thing went wrong');
+        }
+    }
+    public function disactivate($id)
+    {
+        try {
+            User::find($id)->update(['status' => '0']);
+            return back()->with('success', 'User Disactivated Succesfully');
         } catch (\Throwable $th) {
             //throw $th;
             return back()->with('error', 'some thing went wrong');

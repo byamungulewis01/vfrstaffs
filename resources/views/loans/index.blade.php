@@ -2,6 +2,8 @@
 @section('title', 'Loans')
 @section('css')
     <link rel="stylesheet" href="{{ asset('dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
 @endsection
 @section('body')
     <div class="product-list">
@@ -38,10 +40,8 @@
 
 @endsection
 @section('script')
+    @include('layouts.datatable_js')
 
-    <!-- ---------------------------------------------- -->
-    <script src="{{ asset('dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('dist/libs/datatables.net/js/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         $(function() {
             $.ajax({
@@ -73,56 +73,43 @@
                             }, {
                                 targets: 3,
                                 render: function(data, type, row) {
-                                    return row.loan;
+                                    return Number(row.loan).toLocaleString();
                                 }
                             }, {
                                 targets: 4,
                                 render: function(data, type, row) {
-                                    return row.interest;
+                                    return Number(row.interest).toLocaleString();
                                 }
                             },
                             {
                                 targets: 5,
                                 render: function(data, type, row) {
-                                    return row.loan + row.interest;
+                                    return Number(row.loan + row.interest)
+                                        .toLocaleString();
                                 }
                             }, {
                                 targets: 6,
                                 render: function(data, type, row) {
-                                    return row.installement;
+                                    return Number(row.installement).toLocaleString();
                                 }
                             }, {
                                 targets: 7,
                                 render: function(data, type, row) {
                                     var total = row.loan + row.interest;
                                     var rounded = Math.round(total / row.installement);
-                                    return rounded;
+                                    return Number(rounded).toLocaleString();
                                 }
                             }, {
                                 targets: 8,
                                 render: function(data, type, row) {
-                                    var loanPays = row.loan_pays;
-                                    var sumOfAmounts = loanPays.reduce(function(
-                                        accumulator, currentValue) {
-                                        return accumulator + (currentValue
-                                            .amount + currentValue
-                                            .interest);
-                                    }, 0);
-                                    return sumOfAmounts;
+                                    return Number(row.p_loan + row.p_interest).toLocaleString();
                                 }
                             }, {
                                 targets: 9,
                                 render: function(data, type, row) {
-                                    var total = row.loan + row.interest;
-                                    var loanPays = row.loan_pays;
-
-                                    var sumOfAmounts = loanPays.reduce(function(
-                                        accumulator, currentValue) {
-                                        return accumulator + (currentValue
-                                            .amount + currentValue
-                                            .interest);
-                                    }, 0);
-                                    return total - sumOfAmounts;
+                                    var loan = row.loan + row.interest;
+                                    var p_loan = row.p_loan + row.p_interest;
+                                    return Number(loan - p_loan).toLocaleString();
 
                                 }
                             }, {
@@ -157,7 +144,39 @@
                         ],
                         scrollX: true,
                         order: [],
+                        dom: 'Bfrtip',
+                        buttons: [{
+                                extend: 'copy',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                                }
+                            },
+                            {
+                                extend: 'csv',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                                }
+                            }, {
+                                extend: 'excel',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 
+                                }
+                            },
+                            {
+                                extend: 'pdf',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                                },
+                                orientation: 'landscape'
+                            }, {
+                                extend: 'print',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                                },
+                                orientation: 'landscape'
+                            }
+                        ],
                     });
                 }
             });

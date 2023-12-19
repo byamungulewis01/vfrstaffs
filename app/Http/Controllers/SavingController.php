@@ -86,6 +86,7 @@ class SavingController extends Controller {
                     SavingMember::create([
                         'user_id' => explode(',', $member)[0],
                         'amount' => explode(',', $member)[1],
+                        'comment' => $request->comment,
                         'saving_id' => $saving->id,
                     ]);
                 }
@@ -121,6 +122,7 @@ class SavingController extends Controller {
                     'user_id' => $id,
                     'type' => $request->type,
                     'amount' => $request->amount,
+                    'comment' => $request->comment,
                     'saving_id' => $saving->id,
                 ]);
             } else {

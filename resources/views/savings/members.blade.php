@@ -34,7 +34,7 @@
 @section('script')
 
     <!-- ---------------------------------------------- -->
-  @include('layouts.datatable_js')
+    @include('layouts.datatable_js')
 
     <script>
         $(function() {
@@ -47,19 +47,26 @@
                     $('#datatable').DataTable({
 
                         data: data,
-                        columns: [{
-                            data: ''
-                        }, {
-                            data: 'regnumber'
-                        }, {
-                            data: 'name'
-                        }, {
-                            data: 'phone'
-                        }, ],
+
                         columnDefs: [{
                             targets: 0,
                             render: function(data, type, row, meta) {
                                 return meta.row + meta.settings._iDisplayStart + 1;
+                            }
+                        }, {
+                            targets: 1,
+                            render: function(data, type, row, meta) {
+                                return row.regnumber;
+                            }
+                        }, {
+                            targets: 2,
+                            render: function(data, type, row, meta) {
+                                return row.name;
+                            }
+                        }, {
+                            targets: 3,
+                            render: function(data, type, row, meta) {
+                                return row.phone;
                             }
                         }, {
                             targets: 4,
@@ -79,14 +86,41 @@
                                 var route =
                                     "{{ route('saving.showMember', ['id' => ':id']) }}";
                                 route = route.replace(':id', row.id);
-                                return `<a href=${route} class="btn btn-primary btn-sm">MS View</a>`;
+                                return `<a href=${route} class="btn btn-primary btn-sm omit">MS View</a>`;
                             }
                         }, ],
                         scrollX: true,
                         dom: 'Bfrtip',
-                        buttons: [
-                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        buttons: [{
+                                extend: 'copy',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5]
+                                }
+                            },
+                            {
+                                extend: 'csv',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5]
+                                }
+                            }, {
+                                extend: 'excel',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5]
+                                }
+                            },
+                            {
+                                extend: 'pdf',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5]
+                                }
+                            }, {
+                                extend: 'print',
+                                exportOptions: {
+                                    columns: [0, 1, 2, 3, 4, 5]
+                                }
+                            }
                         ],
+
                     });
                 }
             });

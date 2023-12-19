@@ -2,6 +2,8 @@
 @section('title', 'Savings')
 @section('css')
     <link rel="stylesheet" href="{{ asset('dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
 @endsection
 @section('body')
     <div class="product-list">
@@ -26,7 +28,8 @@
                             <td>
                                 @php
                                     $withdraw = \App\Models\SavingMember::where('user_id', $id)
-                                        ->where('type', 'withdraw')->where('status', 'approved')
+                                        ->where('type', 'withdraw')
+                                        ->where('status', 'approved')
                                         ->sum('amount');
                                     $total = $user->total_amount - $withdraw;
                                     $footer_total = $total;
@@ -43,8 +46,10 @@
                 <div class="card-body p-3">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="mb-0">All Savings</h4>
+                        @if (auth()->user()->role == '0')
                         <button class="btn btn-outline-primary flex-1 me-2" data-bs-toggle="modal"
                             data-bs-target="#addModel">Add MST</button>
+                        @endif
                         <div class="modal fade" id="addModel" tabindex="-1" aria-labelledby="exampleModalLabel1">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content p-3">
@@ -124,17 +129,17 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $saving->created_at->format('Y-m-d') }}</td>
                                     <td>
-                                        @if ($saving->_saving->type == 'deposit')
+                                        @if ($saving->type == 'deposit')
                                             Deposit
                                         @else
                                             Withdraw
                                         @endif
                                     </td>
-                                    <td>{{ $saving->_saving->comment }}</td>
+                                    <td>{{ $saving->comment }}</td>
                                     <td>{{ number_format($saving->amount) }}</td>
                                     <td>
                                         {{ number_format($total) }}
-                                        @if ($saving->_saving->type == 'deposit')
+                                        @if ($saving->type == 'deposit')
                                             @php $total -= $saving->amount  @endphp
                                         @else
                                             @php $total += $saving->amount  @endphp
@@ -160,13 +165,19 @@
     </div>
 @endsection
 @section('script')
+    @include('layouts.datatable_js')
 
-    <!-- ---------------------------------------------- -->
-    <script src="{{ asset('dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('dist/libs/datatables.net/js/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         $(function() {
-            $('#datatable').DataTable();
+            $('#datatable').DataTable({
+                scrollX: true,
+                order: [],
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+
+            });
         });
     </script>
 @endsection

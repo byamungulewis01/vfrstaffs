@@ -69,44 +69,30 @@
                             }, {
                                 targets: 3,
                                 render: function(data, type, row) {
-                                    return row.loan;
+                                    return Number(row.loan).toLocaleString();
                                 }
                             }, {
                                 targets: 4,
                                 render: function(data, type, row) {
-                                    return row.interest;
+                                    return Number(row.interest).toLocaleString();
                                 }
                             },
                             {
                                 targets: 5,
                                 render: function(data, type, row) {
-                                    return row.loan + row.interest;
+                                    return Number(row.loan + row.interest).toLocaleString();
                                 }
                             },  {
                                 targets: 6,
                                 render: function(data, type, row) {
-                                    var loanPays = row.loan_pays;
-                                    var sumOfAmounts = loanPays.reduce(function(
-                                        accumulator, currentValue) {
-                                        return accumulator + (currentValue
-                                        .amount + currentValue
-                                        .interest);
-                                    }, 0);
-                                    return sumOfAmounts;
+                                   return Number(row.p_loan + row.p_interest).toLocaleString();
                                 }
                             }, {
                                 targets: 7,
                                 render: function(data, type, row) {
-                                    var total = row.loan + row.interest;
-                                    var loanPays = row.loan_pays;
-
-                                    var sumOfAmounts = loanPays.reduce(function(
-                                        accumulator, currentValue) {
-                                        return accumulator + (currentValue
-                                        .amount + currentValue
-                                        .interest);
-                                    }, 0);
-                                    return total-sumOfAmounts;
+                                    var loan = row.loan + row.interest;
+                                    var p_loan = row.p_loan + row.p_interest;
+                                    return Number(loan - p_loan).toLocaleString();
 
                                 }
                             }, {

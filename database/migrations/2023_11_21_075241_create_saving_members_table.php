@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('type',['deposit', 'withdraw'])->default('deposit');
             $table->enum('status', ['requested', 'approved', 'rejected'])->default('requested');
             $table->integer('amount');
+            $table->string('comment');
             $table->timestamps();
         });
     }

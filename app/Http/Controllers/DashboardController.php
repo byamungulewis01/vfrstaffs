@@ -19,13 +19,12 @@ class DashboardController extends Controller
         $savings = $save_deposit - $save_withdraw;
 
         $loan_approval = (int) Loan::where('status', 'approved')->sum('loan');
-        $loan_paid = (int) LoanPay::where('status', 'approved')->sum('amount');
+        $loan_paid =  (int) Loan::where('status', 'approved')->sum('p_loan');
 
         $loan_interest_approval = (int) Loan::where('status', 'approved')->sum('interest');
-        $loan_interest_paid = (int) LoanPay::where('status', 'approved')->sum('interest');
+        $loan_interest_paid = (int) Loan::where('status', 'approved')->sum('p_interest');
         $remain_loan = $loan_approval - $loan_paid;
         $remain_loan_interest = (int) Loan::where('status', 'approved')->sum('remain_interest');
-        ;
 
         $total_loan = $remain_loan + $remain_loan_interest;
 
@@ -60,7 +59,7 @@ class DashboardController extends Controller
         $expense = (int) IncomeExpence::where('type', 'expense')->where('status', 'approved')->sum('amount');
         $total_income = $income - $expense;
 
-        $loan_paid = (int) LoanPay::where('status', 'approved')->sum('amount');
+        $loan_paid =  (int) Loan::where('status', 'approved')->sum('p_loan');
 
 
         $total_sva = $savings - $loan_approval + $total_income + $loan_paid;

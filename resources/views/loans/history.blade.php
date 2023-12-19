@@ -69,18 +69,19 @@
                             }, {
                                 targets: 3,
                                 render: function(data, type, row) {
-                                    return row.amount;
+                                    return Number(row.amount).toLocaleString();
                                 }
                             }, {
                                 targets: 4,
                                 render: function(data, type, row) {
-                                    return row.interest;
+                                    return Number(row.interest).toLocaleString();
                                 }
                             },
                             {
                                 targets: 5,
                                 render: function(data, type, row) {
-                                    return row.amount + row.interest;
+                                    return Number(row.amount + row.interest)
+                                        .toLocaleString();
                                 }
                             }, {
                                 targets: 6,
