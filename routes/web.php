@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('home');
         Route::get('/vsa-account', 'vsa_account')->name('vsa_account');
+        Route::get('/journal-report', 'journal_report')->name('journal_report');
+        Route::get('/loan-report', 'loan_report')->name('loan_report');
     });
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/profile', 'profile')->name('profile');
@@ -51,10 +53,15 @@ Route::group(['middleware' => 'auth'], function () {
         // Loan Settings
         Route::post('/loan-setting', 'storeLoanSetting')->name('storeLoanSetting');
         Route::put('/loan-setting/{id}', 'updateLoanSetting')->name('updateLoanSetting');
+
+        // Account Settings
+        Route::put('/bank-account', 'updateBankAccount')->name('updateBankAccount');
         // login history
         Route::get('/login-history', 'loginHistory')->name('loginHistory');
         // system history
         Route::get('/system-history', 'systemHistory')->name('systemHistory');
+
+
     });
     Route::controller(UserController::class)->prefix('members')->name('user.')->group(function () {
         Route::get('/', 'index')->name('index');
@@ -83,14 +90,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/payment', 'payment')->name('payment');
         Route::post('/payment/store', 'store_payment')->name('store_payment');
         Route::get('/closed', 'loan_closed')->name('loan_closed');
+        Route::get('/closed-show/{id}', 'closed_show')->name('closed_show');
         Route::post('/', 'store')->name('store');
         Route::post('/import', 'import')->name('import');
         Route::get('/show/{id}', 'show')->name('show');
 
         Route::post('/quick-cover-loan/{id}', 'storeQCL')->name('storeQCL');
         Route::post('/pay-off/{id}', 'storePayOff')->name('storePayOff');
+        Route::post('/pay-partial/{id}', 'storePartialLoan')->name('storePartialLoan');
         Route::post('/topup/{id}', 'topup')->name('topup');
         Route::post('/restructure/{id}', 'restructure')->name('restructure');
+        Route::delete('/reverse/{id}', 'reverse')->name('reverse');
     });
 
     Route::controller(IncomeExpenceController::class)->prefix('income-expences')->name('income_expences.')->group(function () {

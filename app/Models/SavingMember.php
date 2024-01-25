@@ -15,13 +15,18 @@ class SavingMember extends Model
         'comment',
         'status',
         'type',
+        'approved_by',
     ];
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+    public function approval()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
     public function _saving()
     {
-        return $this->hasOne(Saving::class, 'id','saving_id');
+        return $this->hasOne(Saving::class, 'id', 'saving_id');
     }
 }

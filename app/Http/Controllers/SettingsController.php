@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Department;
+use App\Models\BankAccount;
 use App\Models\LoanSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,8 @@ class SettingsController extends Controller
     {
         $departments = Department::orderByDesc('id')->get();
         $loanSettings = LoanSetting::all();
-        return view('settings.index', compact('departments', 'loanSettings'));
+        $account = BankAccount::first()->account;
+        return view('settings.index', compact('departments', 'loanSettings', 'account'));
     }
 
     public function storeDepartment(Request $request)
@@ -56,11 +58,21 @@ class SettingsController extends Controller
         $request->validate([
             'name' => 'required|unique:loan_settings,name',
             'rate' => 'required|numeric',
+            'isPenalty' => 'nullable'
         ]);
         $request->merge([
             'loan_id' => 'LT' . str_pad(LoanSetting::count() + 1, 2, '0', STR_PAD_LEFT),
             'user_id' => auth()->user()->id,
         ]);
+
+        if ($request->has('isPenalty')) {
+            $check = LoanSetting::where('isPenalty', true)->first();
+            if ($check) {
+                return back()->with('error', 'Penalty is already in Settings');
+            }
+            $request->merge(['isPenalty' => true,]);
+        }
+
         try {
             LoanSetting::create($request->all());
             return back()->with('success', 'Setting Added Succesfully');
@@ -74,8 +86,20 @@ class SettingsController extends Controller
         $request->validate([
             'name' => 'required|unique:loan_settings,name,' . $id,
             'rate' => 'required|numeric',
+            'isPenalty' => 'nullable'
         ]);
-        $request->merge(['user_id' => auth()->user()->id]);
+        if ($request->has('isPenalty')) {
+            $check = LoanSetting::where('isPenalty', true)->whereNot('id', $id)->first();
+            if ($check) {
+                return back()->with('error', 'Penalty is already in Settings');
+            }
+            $request->merge(['isPenalty' => true,]);
+            LoanSetting::findorfail($id)->update($request->all());
+            return back()->with('success', 'Setting Update Succesfully');
+        }
+        $request->merge(['user_id' => auth()->user()->id, 'isPenalty' => false]);
+
+
         try {
             LoanSetting::findorfail($id)->update($request->all());
             return back()->with('success', 'Setting Update Succesfully');
@@ -91,6 +115,19 @@ class SettingsController extends Controller
             ->select('authentication_log.*', 'users.name as user_name')
             ->join('users', 'users.id', '=', 'authentication_log.authenticatable_id')
             ->get();
-        return view('settings.login-history',compact('logs'));
+        return view('settings.login-history', compact('logs'));
+    }
+    public function updateBankAccount(Request $request)
+    {
+        $request->validate([
+            'account' => 'required|numeric|min:4',
+        ]);
+        try {
+            BankAccount::first()->update($request->all()); //
+            return back()->with('success', 'Account Update Succesfully');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('error', $th->getMessage());
+        }
     }
 }

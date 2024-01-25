@@ -187,12 +187,38 @@
         </li>
 
         <li class="sidebar-item">
-            <a class="sidebar-link" href="{{ route('vsa_account') }}" aria-expanded="false">
+            <a class="sidebar-link has-arrow" href="#reports" aria-expanded="false">
                 <span class="d-flex">
                     <i class="ti ti-qrcode"></i>
                 </span>
-                <span class="hide-menu">VSA Account</span>
+                <span class="hide-menu">Reports</span>
             </a>
+            <ul aria-expanded="false" class="collapse first-level">
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('vsa_account') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">VSA Account</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('journal_report') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Journal List</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('loan_report') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Loan Report</span>
+                    </a>
+                </li>
+            </ul>
         </li>
     </ul>
 </nav>

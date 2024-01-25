@@ -2,6 +2,8 @@
 @section('title', 'Income And Expense')
 @section('css')
     <link rel="stylesheet" href="{{ asset('dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="{{ asset('dist/datepicker/bootstrap-datepicker.min.css') }}">
 @endsection
 @section('body')
     <div class="product-list">
@@ -18,7 +20,7 @@
                                     <div class="modal-content p-3">
                                         <div class="modal-header d-flex align-items-center">
                                             <h4 class="modal-title" id="exampleModalLabel1">
-                                                INCOME AND EXPENCE REGISTATION
+                                                I&E RECORDING
                                             </h4>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
@@ -79,6 +81,24 @@
                         </div>
                     @endif
                 </div>
+                {{-- <div class="d-flex justify-content-between align-items-center mb-9">
+                    <h2 class="w-50"></h2>
+                    <div class="example">
+                        <form action="" method="get">
+                            <div class="input-daterange input-group" id="date-range">
+                                <input type="text" autocomplete="off" class="form-control"
+                                    value="{{ $_start ?: now()->format('m/d/Y') }}" name="start" />
+
+                                <span class="input-group-text bg-primary b-0 text-white">TO</span>
+
+                                <input type="text" autocomplete="off" class="form-control"
+                                    value="{{ $_end ?: now()->format('m/d/Y') }}" name="end" />
+                                <button class="btn btn-primary ">Search</button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div> --}}
                 <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
                     <thead>
                         <tr>
@@ -100,13 +120,20 @@
 @endsection
 @section('script')
 
+    <script src="{{ asset('dist/datepicker/moment.js') }}"></script>
+    <script src="{{ asset('dist/datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script>
+        jQuery("#date-range").datepicker({
+            toggleActive: true,
+            endDate: '0d',
+        });
+    </script>
     <!-- ---------------------------------------------- -->
-    <script src="{{ asset('dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('dist/libs/datatables.net/js/dataTables.bootstrap5.min.js') }}"></script>
+    @include('layouts.datatable_js')
     <script>
         $(function() {
             $.ajax({
-                url: "{{ route('income_expences.index') }}",
+                url: "{{ route('api.incomeExpence') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
@@ -172,6 +199,10 @@
                         ],
                         scrollX: true,
                         order: [],
+                        dom: 'Bfrtip',
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        ],
 
                     });
                 }

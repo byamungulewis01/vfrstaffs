@@ -134,7 +134,7 @@
     <script>
         $(function() {
             $.ajax({
-                url: "{{ route('loan.create') }}",
+                url: "{{ route('api.loanMembers') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {

@@ -16,4 +16,8 @@ class IncomeExpence extends Model
         'source',
         'comment',
     ];
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
+

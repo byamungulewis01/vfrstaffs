@@ -9,18 +9,12 @@ class IncomeExpenceController extends Controller
 {
     //index
 
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->ajax()) {
-            return response()->json(IncomeExpence::where('source','other')->orderByDesc('id')->get());
-        }
         return view('income_expense.index');
     }
-    public function monthly(Request $request)
+    public function monthly()
     {
-        if ($request->ajax()) {
-            return response()->json(IncomeExpence::whereNot('source','other')->orderByDesc('id')->get());
-        }
         return view('income_expense.monthly');
     }
     public function store(Request $request)

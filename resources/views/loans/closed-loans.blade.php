@@ -114,7 +114,7 @@
                                 targets: 9,
                                 render: function(data, type, row) {
                                     var route =
-                                        "{{ route('loan.show', ['id' => ':id']) }}";
+                                        "{{ route('loan.closed_show', ['id' => ':id']) }}";
                                     route = route.replace(':id', row.id);
                                     return `<a href="${route}" class="btn btn-primary btn-sm">View</a>`;
                                 }

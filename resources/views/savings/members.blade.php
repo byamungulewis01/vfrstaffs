@@ -39,7 +39,7 @@
     <script>
         $(function() {
             $.ajax({
-                url: "{{ route('saving.members') }}",
+                url: "{{ route('api.savingsMember') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {

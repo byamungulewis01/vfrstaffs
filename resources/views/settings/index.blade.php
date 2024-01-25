@@ -176,6 +176,11 @@
                                                     value="{{ old('rate') }}" autocomplete="off"
                                                     placeholder="Loan interest rate" min="1" max="100">
                                             </div>
+                                            <div class="form-check mr-sm-2">
+                                                <input type="checkbox" name="isPenalty" class="form-check-input"
+                                                    id="sf2" value="check">
+                                                <label class="form-check-label" for="sf2">Is Loan penalty ?</label>
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-light-danger text-danger font-medium"
@@ -248,6 +253,14 @@
                                                                     placeholder="Loan interest rate" min="1"
                                                                     max="100">
                                                             </div>
+                                                            <div class="form-check mr-sm-2">
+                                                                <input type="checkbox" name="isPenalty"
+                                                                    {{ $item->isPenalty ? 'checked' : '' }}
+                                                                    class="form-check-input" id="sf{{ $item->id }}"
+                                                                    value="check">
+                                                                <label class="form-check-label" for="sf{{ $item->id }}">Is Loan
+                                                                    penalty ?</label>
+                                                            </div>
 
                                                         </div>
                                                         <div class="modal-footer">
@@ -266,6 +279,74 @@
                                     </td>
                                 </tr>
                             @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-9">
+                        <h5 class="mb-0">Bank Account</h5>
+                    </div>
+                    <table class="table align-middle text-nowrap mb-0" style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th scope="scope">#</th>
+                                <th scope="col">Account Number</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Bank Account</th>
+                                <td>{{ $account }}</td>
+
+                                <td class="d-flex justify-content-center gap-2">
+                                    <a data-bs-toggle="modal" data-bs-target="#accountModel"
+                                        class="btn btn-sm btn-primary" href="#"><i
+                                            class="fs-4 ti ti-edit"></i>Edit</a>
+
+                                    <div class="modal fade" id="accountModel" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel1">
+                                        <div class="modal-dialog modal-md" role="document">
+                                            <div class="modal-content p-3">
+                                                <div class="modal-header d-flex align-items-center">
+                                                    <h4 class="modal-title" id="exampleModalLabel1">
+                                                        Edit Bank Account
+                                                    </h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('setting.updateBankAccount') }}" method="POST">
+                                                    <div class="modal-body">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="mb-3">
+                                                            <label for="name" class="control-label mb-2">Bank
+                                                                Account:</label>
+                                                            <input type="text" name="account" class="form-control"
+                                                                value="{{ $account }}" autocomplete="off"
+                                                                autofocus="on">
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                            class="btn btn-light-danger text-danger font-medium"
+                                                            data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button class="btn btn-success"> Save </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal -->
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

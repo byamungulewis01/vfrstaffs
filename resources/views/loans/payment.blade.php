@@ -25,7 +25,7 @@
 
                         <div class="col-12">
                             <div class="">
-                                <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
+                                <table class="table align-middle text-nowrap mb-0" style="width: 100%">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>

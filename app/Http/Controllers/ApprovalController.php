@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BankAccount;
 use App\Models\Loan;
 use App\Models\Saving;
 use App\Models\LoanPay;
@@ -38,7 +39,7 @@ class ApprovalController extends Controller
 
         $approved = Saving::findorfail($id)->update(['status' => 'approved']);
         if ($approved) {
-            SavingMember::where('saving_id', $id)->update(['status' => 'approved']);
+            SavingMember::where('saving_id', $id)->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
             $type = SavingMember::where('saving_id', $id)->first()->type;
             VsaAccount::create([
                 'amount' => $saving->amount,
@@ -46,8 +47,11 @@ class ApprovalController extends Controller
                 'user_id' => auth()->user()->id,
                 'source' => 'saving',
                 'comment' => $saving->comment,
-                'saving_by' => $saving->saving_by
+                'saving_by' => $saving->saving_by,
+                'tranking' => SavingMember::where('saving_id', $id)->first()->id,
+                'account_number' => BankAccount::first()->account,
             ]);
+
         }
         return back()->with('success', 'Transaction Approved');
     }
@@ -57,7 +61,7 @@ class ApprovalController extends Controller
 
         foreach ($savings as $saving) {
             $saving->update(['status' => 'approved']);
-            SavingMember::where('saving_id', $saving->id)->update(['status' => 'approved']);
+            SavingMember::where('saving_id', $saving->id)->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
             $type = SavingMember::where('saving_id', $saving->id)->first()->type;
             VsaAccount::create([
                 'amount' => $saving->amount,
@@ -65,7 +69,9 @@ class ApprovalController extends Controller
                 'user_id' => auth()->user()->id,
                 'source' => 'saving',
                 'comment' => $saving->comment,
-                'saving_by' => $saving->saving_by
+                'saving_by' => $saving->saving_by,
+                'tranking' => SavingMember::where('saving_id', $saving->id)->first()->id,
+                'account_number' => BankAccount::first()->account,
             ]);
         }
 
@@ -87,7 +93,7 @@ class ApprovalController extends Controller
     public function loan_approve($id)
     {
         $loan = Loan::findorfail($id);
-        $loan->update(['status' => 'approved']);
+        $loan->update(['status' => 'approved', 'approved_date' => now(), 'approved_by' => auth()->user()->id]);
         if ($loan) {
             VsaAccount::create([
                 'amount' => $loan->loan,
@@ -95,6 +101,9 @@ class ApprovalController extends Controller
                 'user_id' => auth()->user()->id,
                 'source' => 'loan',
                 'comment' => $loan->comment,
+                'tranking' => $loan->id,
+                'isLoan' => true,
+                'account_number' => BankAccount::first()->account,
             ]);
         }
 
@@ -104,13 +113,16 @@ class ApprovalController extends Controller
     {
         $loans = Loan::where('status', 'requested')->get();
         foreach ($loans as $loan) {
-            $loan->update(['status' => 'approved']);
+            $loan->update(['status' => 'approved', 'approved_date' => now(), 'approved_by' => auth()->user()->id]);
             VsaAccount::create([
                 'amount' => $loan->loan,
                 'type' => 'withdraw',
                 'user_id' => auth()->user()->id,
                 'source' => 'loan',
                 'comment' => $loan->comment,
+                'tranking' => $loan->id,
+                'isLoan' => true,
+                'account_number' => BankAccount::first()->account,
             ]);
         }
 
@@ -126,7 +138,9 @@ class ApprovalController extends Controller
         $loans = LoanPay::with(['loan.user'])->select('loan_pays.*', DB::raw('COALESCE(approved_sum.amount, 0) as approved_sum'))
             ->leftJoin(
                 DB::raw('(SELECT loan_id, SUM(amount + interest) as amount FROM loan_pays WHERE status = "approved" GROUP BY loan_id) as approved_sum'),
-                'loan_pays.loan_id', '=', 'approved_sum.loan_id'
+                'loan_pays.loan_id',
+                '=',
+                'approved_sum.loan_id'
             )->where('loan_pays.status', 'requested')->orderByDesc('loan_pays.id')->get();
         if ($request->ajax()) {
             return response()->json($loans);
@@ -140,13 +154,17 @@ class ApprovalController extends Controller
         $loan_pays = (int) LoanPay::where('loan_id', $loanPay->loan_id)->sum('amount');
 
         $remain_interest = Loan::find($loanPay->loan_id)->interest - $loanPay->interest;
-        $paid_loan = Loan::find($loanPay->loan_id)->p_loan + $loanPay->loan;
+        $paid_loan = Loan::find($loanPay->loan_id)->p_loan + $loanPay->amount;
         $paid_interest = Loan::find($loanPay->loan_id)->p_interest + $loanPay->interest;
 
         if ($loan <= $loan_pays) {
             LoanPay::findorfail($id)->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
-            Loan::findorfail($loanPay->loan_id)->update(['loan_status' => 'closed',
-                'remain_interest' => 0, 'p_loan' => $paid_loan, 'p_interest' => $paid_interest]);
+            Loan::findorfail($loanPay->loan_id)->update([
+                'loan_status' => 'closed',
+                'remain_interest' => 0,
+                'p_loan' => $paid_loan,
+                'p_interest' => $paid_interest
+            ]);
         } else {
             LoanPay::findorfail($id)->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
             Loan::findorfail($loanPay->loan_id)->update(['remain_interest' => $remain_interest, 'p_loan' => $paid_loan, 'p_interest' => $paid_interest]);
@@ -159,22 +177,29 @@ class ApprovalController extends Controller
             'comment' => $loanPay->comment,
             'source' => 'interest',
             'status' => 'approved',
+            'approved_by' => auth()->user()->id
         ]);
 
         // array of data
-        $data = [[
-            'amount' => $loanPay->interest,
-            'type' => 'deposit',
-            'user_id' => auth()->user()->id,
-            'source' => 'interest',
-            'comment' => $loanPay->comment,
-        ], [
-            'amount' => $loanPay->amount,
-            'type' => 'deposit',
-            'user_id' => auth()->user()->id,
-            'source' => 'loan',
-            'comment' => $loanPay->comment,
-        ]
+        $data = [
+            [
+                'amount' => $loanPay->interest,
+                'type' => 'deposit',
+                'user_id' => auth()->user()->id,
+                'source' => 'interest',
+                'comment' => $loanPay->comment,
+                'tranking' => $id,
+                'account_number' => BankAccount::first()->account,
+            ],
+            [
+                'amount' => $loanPay->amount,
+                'type' => 'deposit',
+                'user_id' => auth()->user()->id,
+                'source' => 'loan',
+                'comment' => $loanPay->comment,
+                'tranking' => $id,
+                'account_number' => BankAccount::first()->account,
+            ]
         ];
 
         foreach ($data as $value) {
@@ -190,13 +215,24 @@ class ApprovalController extends Controller
             $loan = Loan::find($loanPay->loan_id)->loan;
             $loan_pays = (int) LoanPay::where('loan_id', $loanPay->loan_id)->sum('amount');
             $remain_interest = Loan::find($loanPay->loan_id)->interest - $loanPay->interest;
+            $paid_loan = Loan::find($loanPay->loan_id)->p_loan + $loanPay->amount;
+            $paid_interest = Loan::find($loanPay->loan_id)->p_interest + $loanPay->interest;
 
             if ($loan <= $loan_pays) {
                 LoanPay::findorfail($loanPay->id)->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
-                Loan::findorfail($loanPay->loan_id)->update(['loan_status' => 'closed', 'remain_interest' => 0]);
+                Loan::findorfail($loanPay->loan_id)->update([
+                    'loan_status' => 'closed',
+                    'remain_interest' => 0,
+                    'p_loan' => $paid_loan,
+                    'p_interest' => $paid_interest
+                ]);
             } else {
                 LoanPay::findorfail($loanPay->id)->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
-                Loan::findorfail($loanPay->loan_id)->update(['remain_interest' => $remain_interest]);
+                Loan::findorfail($loanPay->loan_id)->update([
+                    'remain_interest' => $remain_interest,
+                    'p_loan' => $paid_loan,
+                    'p_interest' => $paid_interest
+                ]);
             }
             IncomeExpence::create([
                 'amount' => $loanPay->interest,
@@ -205,22 +241,29 @@ class ApprovalController extends Controller
                 'comment' => $loanPay->comment,
                 'source' => 'interest',
                 'status' => 'approved',
+                'approved_by' => auth()->user()->id
             ]);
 
             // array of data
-            $data = [[
-                'amount' => $loanPay->interest,
-                'type' => 'deposit',
-                'user_id' => auth()->user()->id,
-                'source' => 'interest',
-                'comment' => $loanPay->comment,
-            ], [
-                'amount' => $loanPay->amount,
-                'type' => 'deposit',
-                'user_id' => auth()->user()->id,
-                'source' => 'loan',
-                'comment' => $loanPay->comment,
-            ]
+            $data = [
+                [
+                    'amount' => $loanPay->interest,
+                    'type' => 'deposit',
+                    'user_id' => auth()->user()->id,
+                    'source' => 'interest',
+                    'comment' => $loanPay->comment,
+                    'tranking' => $loanPay->id,
+                    'account_number' => BankAccount::first()->account,
+                ],
+                [
+                    'amount' => $loanPay->amount,
+                    'type' => 'deposit',
+                    'user_id' => auth()->user()->id,
+                    'source' => 'loan',
+                    'comment' => $loanPay->comment,
+                    'tranking' => $loanPay->id,
+                    'account_number' => BankAccount::first()->account,
+                ]
             ];
 
             foreach ($data as $value) {
@@ -304,7 +347,7 @@ class ApprovalController extends Controller
     {
         $income = IncomeExpence::findorfail($id);
         $type = ($income->type == 'income') ? 'deposit' : 'withdraw';
-        $approved = $income->update(['status' => 'approved']);
+        $approved = $income->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
         if ($approved) {
             VsaAccount::create([
                 'amount' => $income->amount,
@@ -312,6 +355,8 @@ class ApprovalController extends Controller
                 'user_id' => auth()->user()->id,
                 'source' => $income->source,
                 'comment' => $income->comment,
+                'tranking' => $income->id,
+                'account_number' => BankAccount::first()->account,
             ]);
         }
         return back()->with('success', 'Approved Successfully');
@@ -326,13 +371,15 @@ class ApprovalController extends Controller
         $incomes = IncomeExpence::where('status', 'requested')->get();
         foreach ($incomes as $income) {
             $type = ($income->type == 'income') ? 'deposit' : 'withdraw';
-            $income->update(['status' => 'approved']);
+            $income->update(['status' => 'approved', 'approved_by' => auth()->user()->id]);
             VsaAccount::create([
                 'amount' => $income->amount,
                 'type' => $type,
                 'user_id' => auth()->user()->id,
                 'source' => $income->source,
                 'comment' => $income->comment,
+                'tranking' => $income->id,
+                'account_number' => BankAccount::first()->account,
             ]);
         }
 

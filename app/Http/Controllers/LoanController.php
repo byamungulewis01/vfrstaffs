@@ -8,6 +8,7 @@ use App\Models\LoanPay;
 use App\Models\LoanTopup;
 use App\Models\LoanSetting;
 use App\Imports\LoansImport;
+use App\Models\VsaAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,15 +21,12 @@ class LoanController extends Controller
         if ($request->ajax()) {
             return response()->json(Loan::with(['user', 'loan_setting', 'loan_pays'])->where('status', 'approved')->where('loan_status', 'open')->orderByDesc('id')->get());
         }
-        $loanTypes = LoanSetting::all();
+        $loanTypes = LoanSetting::where('isPenalty', false)->get();
         return view('loans.index', compact('loanTypes'));
     }
     public function create(Request $request)
     {
-        if ($request->ajax()) {
-            return response()->json(User::with(['department'])->orderBy('name')->get());
-        }
-        $loanTypes = LoanSetting::all();
+        $loanTypes = LoanSetting::where('isPenalty', false)->get();
         return view('loans.create', compact('loanTypes'));
     }
     public function history(Request $request)
@@ -36,7 +34,9 @@ class LoanController extends Controller
         $loans = LoanPay::with(['loan.user', 'approval'])->select('loan_pays.*', DB::raw('COALESCE(approved_sum.amount, 0) as approved_sum'))
             ->leftJoin(
                 DB::raw('(SELECT loan_id, SUM(amount + interest) as amount FROM loan_pays WHERE status = "approved" GROUP BY loan_id) as approved_sum'),
-                'loan_pays.loan_id', '=', 'approved_sum.loan_id'
+                'loan_pays.loan_id',
+                '=',
+                'approved_sum.loan_id'
             )->where('loan_pays.status', 'approved')->orderByDesc('loan_pays.id')->get();
         if ($request->ajax()) {
             return response()->json($loans);
@@ -45,11 +45,12 @@ class LoanController extends Controller
     }
     public function payment(Request $request)
     {
-        $loans = Loan::where('status', 'approved')->orderByDesc('id')->get();
+        $loans = Loan::where('status', 'approved')->where('loan_status', 'open')->orderByDesc('id')->get();
         return view('loans.payment', compact('loans'));
     }
     public function store_payment(Request $request)
     {
+        // dd($request->all());
         $request->validate(['comment' => 'required', 'members' => 'required|array']);
         try {
             foreach ($request->members as $member) {
@@ -111,6 +112,7 @@ class LoanController extends Controller
                     'installement' => $request->installement,
                     'comment' => $request->comment,
                     'loan_type' => $request->loan_type,
+                    'posted_by' => auth()->user()->id
                 ]
             );
             return redirect()->back()->with('success', 'Loan registed successfully');
@@ -137,9 +139,16 @@ class LoanController extends Controller
 
     public function show(Request $request, $id)
     {
+
         $loan = Loan::findorfail($id);
         $loan_pays = LoanPay::where('loan_id', $loan->id)->where('status', 'approved')->get();
         return view('loans.show', compact('loan', 'loan_pays'));
+    }
+    public function closed_show(Request $request, $id)
+    {
+        $loan = Loan::findorfail($id);
+        $loan_pays = LoanPay::where('loan_id', $loan->id)->where('status', 'approved')->get();
+        return view('loans.show-closed', compact('loan', 'loan_pays'));
     }
 
     public function storeQCL(Request $request, $id)
@@ -184,6 +193,29 @@ class LoanController extends Controller
             return back()->with('error', 'some thing went wrong');
         }
     }
+    public function storePartialLoan(Request $request, $id)
+    {
+        // dd($request->all(), $id);
+        $request->validate([
+            'amount' => 'required|numeric',
+            'penalty' => 'required|numeric',
+            'interest' => 'required|numeric',
+            'comment' => 'required',
+        ]);
+        try {
+            $request->merge(['loan_id' => $id, 'isPartial' => true]);
+            $last = LoanPay::where('loan_id', $id)->where('status', 'requested')->first();
+            if ($last) {
+                return back()->with('error', 'Please wait for last loan to be approved');
+            }
+
+            LoanPay::create($request->all());
+            return back()->with('success', 'Partial Pay Loan Successfully');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('error', 'some thing went wrong');
+        }
+    }
     public function topup(Request $request, $id)
     {
         $request->validate([
@@ -223,5 +255,13 @@ class LoanController extends Controller
             //throw $th;
             return back()->with('error', 'some thing went wrong');
         }
+    }
+    public function reverse(Request $request, $id)
+    {
+        $loanPay = LoanPay::findorfail($id)->delete();
+        if ($loanPay) {
+            VsaAccount::where('tranking', $id)->delete();
+        }
+        return back()->with('success', 'Loan reversed successfully');
     }
 }

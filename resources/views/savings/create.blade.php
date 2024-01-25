@@ -33,9 +33,9 @@
 
                         </div>
                         <div class="col-12">
-                            <div class="">
-                                <label for="exampleInputtext4" class="form-label fw-semibold">Member List</label>
-                                <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
+                            <label for="exampleInputtext4" class="form-label fw-semibold p-2">Member List</label>
+                            <div class="overflow-y-auto" style="max-height: 500px;">
+                                <table class="table align-middle text-nowrap mb-0" style="width: 100%">
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>

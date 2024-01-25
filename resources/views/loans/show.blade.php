@@ -81,6 +81,14 @@
                             </tbody>
                         </table>
                         @php
+                            $disable2 = '';
+
+                            $loan_pay = \App\Models\LoanPay::where('loan_id', $loan->id)
+                                ->latest()
+                                ->first();
+                            if (@$loan_pay->isPartial == true && @$loan_pay->penalty > 0) {
+                                $disable2 = 'disabled';
+                            }
                             $t_loan = $loan->loan + $loan->interest;
                             $t_remain = $loan_pays->sum('amount') + $loan_pays->sum('interest');
                             $disable = $loan->loan == $loan_pays->sum('amount') ? 'disabled' : '';
@@ -117,19 +125,23 @@
                             @if ($loan->status == 'approved')
                                 <div class="button-group">
                                     <button data-bs-toggle="modal" data-bs-target="#restructure" type="button"
-                                        class="btn waves-effect {{ $disable }} waves-light btn-warning">
+                                        class="btn waves-effect {{ $disable }}{{ $disable2 }} waves-light btn-warning">
                                         Restructure
                                     </button>
                                     <button data-bs-toggle="modal" data-bs-target="#topup" type="button"
-                                        class="btn waves-effect {{ $disable }} waves-light btn-secondary">
+                                        class="btn waves-effect {{ $disable }}{{ $disable2 }}  waves-light btn-secondary">
                                         Topup
                                     </button>
+                                    <button data-bs-toggle="modal" data-bs-target="#partial" type="button"
+                                        class="btn waves-effect {{ $disable }} waves-light btn-danger">
+                                        Partial Pay
+                                    </button>
                                     <button data-bs-toggle="modal" data-bs-target="#addPayOff" type="button"
-                                        class="btn waves-effect {{ $disable }} waves-light btn-success">
+                                        class="btn waves-effect {{ $disable }}{{ $disable2 }}  waves-light btn-success">
                                         Pay Off
                                     </button>
                                     <button data-bs-toggle="modal" data-bs-target="#addQCL" type="button"
-                                        class="btn waves-effect {{ $disable }} waves-light btn-info">
+                                        class="btn waves-effect {{ $disable }}{{ $disable2 }}  waves-light btn-info">
                                         Add QCL
                                     </button>
                                     <div class="modal fade" id="addQCL" tabindex="-1"
@@ -258,6 +270,98 @@
                                         </div>
                                     </div>
                                     <!-- /.modal -->
+                                    <div class="modal fade" id="partial" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel2">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content p-3">
+                                                <div class="modal-header d-flex align-items-center">
+                                                    <h4 class="modal-title" id="exampleModalLabel2">
+                                                        PARTIAL COVER LOAN
+                                                    </h4>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('loan.storePartialLoan', $loan->id) }}"
+                                                    method="POST">
+                                                    <div class="modal-body">
+                                                        @csrf
+                                                        @php
+                                                            $loan_pay = \App\Models\LoanPay::where('loan_id', $loan->id)
+                                                                ->latest()
+                                                                ->first();
+
+                                                            if (@$loan_pay->isPartial == true && @$loan_pay->status == 'approved' && @$loan_pay->penalty > 0) {
+                                                                $_loan = round($loan->loan / $loan->installement);
+
+                                                                $penalty = 0;
+                                                                $interest = 0;
+                                                                $_total = $_loan - $loan_pay->amount;
+                                                                $amount = $_loan - $loan_pay->amount;
+                                                                $readonly = 'readonly';
+                                                            } else {
+                                                                $_loan = round($loan->loan / $loan->installement);
+                                                                $penalty_rate = \App\Models\LoanSetting::where('isPenalty', true)->first()->rate;
+                                                                $tt = ($loan->loan - $loan->p_loan) * $penalty_rate;
+                                                                $penalty = $tt / 100;
+                                                                $interest = round($loan->interest / $loan->installement);
+                                                                $total = $_loan + $interest;
+                                                                $amount = null;
+                                                                $_total = null;
+                                                                $readonly = '';
+                                                            }
+
+                                                        @endphp
+                                                        <div class="mb-3">
+                                                            <label for="total" class="control-label mb-2">Total monthly
+                                                                loan:</label>
+                                                            <input type="number" min="0"
+                                                                max="{{ $total }}" {{ $readonly }}
+                                                                name="total" value="{{ $_total }}"
+                                                                id="total" class="form-control">
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-6">
+                                                                <label for="penalty" class="control-label mb-2">Loan
+                                                                    Penalty:</label>
+                                                                <input type="text" readonly name="penalty"
+                                                                    value="{{ $penalty }}" class="form-control">
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label for="interest" class="control-label mb-2">Total
+                                                                    Interest:</label>
+                                                                <input type="text" readonly name="interest"
+                                                                    value="{{ $interest }}" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="amount" class="control-label mb-2">Loan:</label>
+                                                            <input type="text" readonly value="{{ $amount }}"
+                                                                id="amount" name="amount" class="form-control">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="comment"
+                                                                class="control-label mb-2">Comment:</label>
+                                                            <textarea name="comment" class="form-control" required rows="2" placeholder="Text Here..."></textarea>
+                                                            @error('comment')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                            class="btn btn-light-danger text-danger font-medium"
+                                                            data-bs-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button class="btn btn-success"> Submit </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.modal -->
 
                                     <div class="modal fade" id="topup" tabindex="-1"
                                         aria-labelledby="exampleModalLabel3">
@@ -364,6 +468,7 @@
                                 <th scope="col">Comment</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Balance</th>
+                                <th scope="col">Reverse</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -397,6 +502,38 @@
                                         @endif
                                     </td>
                                     <td>{{ $print - $p }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#reverseModel{{ $loan_pay->id }}"><i
+                                                class="ti ti-arrow-left"></i></button>
+                                        <div class="modal fade" id="reverseModel{{ $loan_pay->id }}" tabindex="-1"
+                                            aria-labelledby="vertical-center-modal" style="display: none;"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-md">
+                                                <div class="modal-content modal-filled bg-light-danger">
+                                                    <div class="modal-body p-4">
+                                                        <form action="{{ route('loan.reverse', $loan_pay->id) }}"
+                                                            method="post">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <div class="text-center text-danger">
+                                                                <h4 class="mt-2 text-danger">Are you Sure Reverse?</h4>
+                                                                <p class="mt-3">
+                                                                    Please Ensure that you have read carefully <br>the List
+                                                                    of
+                                                                    Terms and Conditions
+                                                                </p>
+                                                                <button class="btn btn-light my-2">
+                                                                    Yes I'm sure
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <!-- /.modal-content -->
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -421,6 +558,19 @@
                 ],
 
             });
+        });
+    </script>
+    <script>
+        $("#total").on("input", function() {
+            var inputValue = parseInt($(this).val(), 10);
+            var penalty = parseInt('{{ $penalty }}', 10);
+            var interest = parseInt('{{ $interest }}', 10);
+
+            var sum = penalty + interest;
+            var loan = inputValue - sum;
+
+            $('#amount').val(loan);
+
         });
     </script>
 @endsection

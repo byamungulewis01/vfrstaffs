@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('status', ['requested', 'approved', 'rejected'])->default('requested');
             $table->integer('amount');
             $table->string('comment');
+            $table->foreignId('approved_by')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

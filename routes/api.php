@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -25,4 +26,12 @@ use App\Models\User;
 
 Route::controller(UserController::class)->name('api.')->group(function () {
     Route::get('/', 'usersApi')->name('users');
+});
+
+Route::controller(ApiController::class)->name('api.')->group(function () {
+    Route::get('/incomeExpence', 'incomeExpence')->name('incomeExpence');
+    Route::get('/monthly-incomeExpence', 'monthlyIncomeExpence')->name('monthlyIncomeExpence');
+    Route::get('/savings', 'savings')->name('savings');
+    Route::get('/savingsMember', 'savingsMember')->name('savingsMember');
+    Route::get('/loanMembers', 'loanMembers')->name('loanMembers');
 });

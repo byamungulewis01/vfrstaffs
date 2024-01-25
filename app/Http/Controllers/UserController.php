@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return response()->json(User::where('status', '1')->with(['department'])->get());
+            return response()->json(User::where('status', '1')->with(['department'])->orderBy('name')->get());
         }
         $departments = Department::orderByDesc('id')->get();
         return view('users.index', compact('departments'));
@@ -46,7 +46,7 @@ class UserController extends Controller
         $request->merge([
             'department_id' => $request->department,
             'password' => bcrypt($request->username),
-            'regnumber' => 'VFC' . str_pad(User::count() + 1, 3, '0', STR_PAD_LEFT),
+            'regnumber' => 'VFC' . str_pad(User::latest()->first()->id + 1, 3, '0', STR_PAD_LEFT),
         ]);
 
         try {
@@ -54,7 +54,7 @@ class UserController extends Controller
             return back()->with('success', 'User Registed Succesfully');
         } catch (\Throwable $th) {
             //throw $th;
-            return back()->with('error', 'some thing went wrong');
+            return back()->with('error', 'some thing went wrong'.$th->getMessage());
         }
     }
     public function update(Request $request, $id)

@@ -55,7 +55,7 @@
                 <span class="hide-menu">Loans</span>
             </a>
             <ul aria-expanded="false"
-                class="collapse first-level {{ in_array(Route::currentRouteName(), ['loan.create', 'loan.index', 'loan.show', 'loan.history', 'loan.payment']) ? 'in' : '' }}">
+                class="collapse first-level {{ in_array(Route::currentRouteName(), ['loan.create', 'loan.index', 'loan.show', 'loan.history', 'loan.payment','loan.closed_show']) ? 'in' : '' }}">
                 <li class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.create']) ? 'active' : '' }}">
                     <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.create']) ? 'active' : '' }}"
                         href="{{ route('loan.create') }}">
@@ -85,8 +85,8 @@
                     </a>
                 </li>
                 <li
-                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.loan_closed']) ? 'active' : '' }}">
-                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.loan_closed']) ? 'active' : '' }}"
+                    class="sidebar-item {{ in_array(Route::currentRouteName(), ['loan.loan_closed','loan.closed_show']) ? 'active' : '' }}">
+                    <a class="sidebar-link {{ in_array(Route::currentRouteName(), ['loan.loan_closed','loan.closed_show']) ? 'active' : '' }}"
                         href="{{ route('loan.loan_closed') }}">
                         <div class="round-16 d-flex align-items-center justify-content-center">
                             <i class="ti ti-circle"></i>
@@ -140,12 +140,38 @@
         </li>
 
         <li class="sidebar-item">
-            <a class="sidebar-link" href="{{ route('vsa_account') }}" aria-expanded="false">
+            <a class="sidebar-link has-arrow" href="#reports" aria-expanded="false">
                 <span class="d-flex">
                     <i class="ti ti-qrcode"></i>
                 </span>
-                <span class="hide-menu">VSA Account</span>
+                <span class="hide-menu">Reports</span>
             </a>
+            <ul aria-expanded="false" class="collapse first-level">
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('vsa_account') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">VSA Account</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('journal_report') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Journal List</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('loan_report') }}">
+                        <div class="round-16 d-flex align-items-center justify-content-center">
+                            <i class="ti ti-circle"></i>
+                        </div>
+                        <span class="hide-menu">Loan Report</span>
+                    </a>
+                </li>
+            </ul>
         </li>
 
         <li class="sidebar-item">

@@ -97,7 +97,7 @@
         $(function() {
             $('#loadingIndicator').show();
             $.ajax({
-                url: "{{ route('saving.index') }}",
+                url: "{{ route('api.savings') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {

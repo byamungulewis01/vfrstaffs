@@ -20,19 +20,30 @@ class Loan extends Model
         'p_loan',
         'p_interest',
         'remain_interest',
+        'posted_by',
+        'approved_date',
+        'approved_by',
     ];
 
     public function user()
-     {
-         return $this->belongsTo(User::class);
-     }
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function posted()
+    {
+        return $this->belongsTo(User::class, 'posted_by');
+    }
+    public function approval()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
     public function loan_setting()
-     {
-         return $this->belongsTo(LoanSetting::class,'loan_type');
-     }
+    {
+        return $this->belongsTo(LoanSetting::class, 'loan_type');
+    }
     public function loan_pays()
     {
-         return $this->hasMany(LoanPay::class);
+        return $this->hasMany(LoanPay::class);
     }
     // loan pays approved
 

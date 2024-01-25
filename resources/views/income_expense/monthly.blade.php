@@ -37,7 +37,7 @@
     <script>
         $(function() {
             $.ajax({
-                url: "{{ route('income_expences.monthly') }}",
+                url: "{{ route('api.monthlyIncomeExpence') }}",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {

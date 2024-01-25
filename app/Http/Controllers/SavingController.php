@@ -10,24 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class SavingController extends Controller {
     //index
-    public function index(Request $request) {
-        if($request->ajax()) {
-            return response()->json(Saving::with(['user'])->orderByDesc('id')->get());
-        }
+    public function index() {
+
         return view('savings.index');
     }
     // members
-    public function members(Request $request) {
-        $usersWithTotalAmount = User::select('users.*', DB::raw('SUM(saving_members.amount) as total_amount'),
-            DB::raw('SUM(CASE WHEN saving_members.type = "withdraw" THEN saving_members.amount ELSE 0 END) as total_withdrawn_amount'))
-            ->leftJoin('saving_members', function ($join) {
-                $join->on('users.id', '=', 'saving_members.user_id')
-                    ->where('saving_members.status', '=', 'approved');
-            })->groupBy('users.id')->orderBy('users.name')->get();
+    public function members() {
 
-        if($request->ajax()) {
-            return response()->json($usersWithTotalAmount);
-        }
         return view('savings.members');
     }
     public function showMember(Request $request, $id) {
@@ -55,7 +44,7 @@ class SavingController extends Controller {
         if($request->ajax()) {
             return response()->json(User::with(['department'])->get());
         }
-        $users = User::all();
+        $users = User::whereNot('savings',0)->get();
         return view('savings.create', compact('users'));
     }
     // store
@@ -65,6 +54,7 @@ class SavingController extends Controller {
             'comment' => 'required',
             'members' => 'required|array',
         ]);
+        dd($request->all());
         try {
             // Check if there is already a saving entry for the current month
             $currentMonth = now()->format('m');
