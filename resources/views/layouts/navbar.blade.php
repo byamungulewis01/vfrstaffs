@@ -5,11 +5,7 @@
                 <i class="ti ti-menu-2"></i>
             </a>
         </li>
-        <li class="nav-item d-none d-lg-block">
-            <a class="nav-link nav-icon-hover" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#exa">
-                <i class="ti ti-search"></i>
-            </a>
-        </li>
+       
     </ul>
 
     <div class="d-block d-lg-none">
@@ -29,17 +25,13 @@
           </a>
           <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
 
-            <li class="nav-item">
-              <a class="nav-link notify-badge nav-icon-hover" href="javascript:void(0)" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                  <i class="ti ti-basket"></i>
-                  <span class="badge rounded-pill bg-danger fs-2">2</span>
-              </a>
-            </li>
+
 
             <li class="nav-item dropdown">
               <a class="nav-link pe-0" href="javascript:void(0)" id="drop1" data-bs-toggle="dropdown" aria-expanded="false">
                 <div class="d-flex align-items-center">
                   <div class="user-profile-img">
+                    {{ auth()->user()->name }}
                     <img src="{{ asset('dist/images/profile/default.jpg') }}" class="rounded-circle" width="35" height="35" alt="" />
                   </div>
                 </div>
