@@ -11,7 +11,7 @@
             <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-center mb-9">
                     <h2 class="w-50">Journal Report </h2>
-                    <div class="example">
+                    {{-- <div class="example">
                         <form action="" method="get">
                             <div class="input-daterange input-group" id="date-range">
                                 <input type="text" autocomplete="off" class="form-control"
@@ -25,7 +25,7 @@
 
                             </div>
                         </form>
-                    </div>
+                    </div> --}}
                 </div>
                 <table id="datatable" class="table align-middle text-nowrap mb-0" style="width: 100%">
                     <thead>
@@ -45,51 +45,18 @@
                     </thead>
                     <tbody>
                         @foreach ($journal_reports as $item)
-                            @php
-                                if ($item->source == 'saving') {
-                                    # code...
-                                    @$post_date = App\models\SavingMember::find($item->tranking)->created_at;
-                                    @$member_name = \App\Models\SavingMember::find($item->tranking)->user->name;
-                                    @$member_regnumber = \App\Models\SavingMember::find($item->tranking)->user->regnumber;
-                                    @$posted_by = \App\Models\SavingMember::find($item->tranking)->_saving->user->name;
-                                    @$approved_by = \App\Models\SavingMember::find($item->tranking)->approval->name;
-                                } elseif ($item->source == 'other') {
-                                    # code...
-                                    // @$post_date = App\models\IncomeExpence::find($item->tranking)->created_at->format('Y-m-d');
-                                    @$member_name = \App\Models\IncomeExpence::find($item->tranking)->user->name;
-                                    @$member_regnumber = \App\Models\IncomeExpence::find($item->tranking)->user->regnumber;
-                                    @$posted_by = \App\Models\IncomeExpence::find($item->tranking)->user->name;
-                                    @$approved_by = \App\Models\IncomeExpence::find($item->tranking)->approval->name;
-                                } elseif ($item->source == 'loan' && $item->isLoan == true) {
-                                    # code...
-                                    @$post_date = App\models\Loan::find($item->tranking)->created_at;
-                                    @$member_name = \App\Models\Loan::find($item->tranking)->user->name;
-                                    @$member_regnumber = \App\Models\Loan::find($item->tranking)->user->regnumber;
-                                    @$posted_by = \App\Models\Loan::find($item->tranking)->posted->name;
-                                    @$approved_by = \App\Models\Loan::find($item->tranking)->approval->name;
-                                } else {
-                                    @$post_date = App\models\LoanPay::find($item->tranking)->created_at;
-                                    @$member_name = \App\Models\LoanPay::find($item->tranking)->loan->user->name;
-                                    @$member_regnumber = \App\Models\LoanPay::find($item->tranking)->loan->user->regnumber;
-                                    @$posted_by = \App\Models\LoanPay::find($item->tranking)->loan->posted->name;
-                                    @$approved_by = \App\Models\LoanPay::find($item->tranking)->approval->name;
-                                    # code...
-                                }
-
-                            @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $post_date }}</td>
+                                <td>{{ $item->post_date }}</td>
                                 <td>{{ $item->created_at->format('Y-m-d') }}</td>
-
                                 <td>{{ $item->account_number }}</td>
-                                <td>{{ $member_regnumber }}</td>
-                                <td>{{ $member_name }}</td>
+                                <td>{{ $item->member_regnumber }}</td>
+                                <td>{{ $item->member_name }}</td>
                                 <td>{{ $item->comment }}</td>
                                 <td>{{ $item->type }}</td>
                                 <td>{{ $item->amount }}</td>
-                                <td>{{ !$posted_by ? 'Unknown User' : $posted_by }}</td>
-                                <td>{{ !$approved_by ? 'Unknown User' : $approved_by }}</td>
+                                <td>{{ $item->posted_by }}</td>
+                                <td>{{ $item->approved_by }}</td>
                             </tr>
                         @endforeach
                     </tbody>

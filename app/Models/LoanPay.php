@@ -19,6 +19,8 @@ class LoanPay extends Model
         'penalty',
         'isPartial',
         'approved_by',
+        'posted_by',
+        'user_id',
 
     ];
     public function loan()

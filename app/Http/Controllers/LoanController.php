@@ -63,6 +63,8 @@ class LoanController extends Controller
                     'amount' => $_loan,
                     'loan_id' => $member,
                     'comment' => $request->comment,
+                    'posted_by' => auth()->user()->id,
+                    'user_id' => $member->user_id,
                 ]);
             }
             return back()->with('success', 'Quick Pay Loan Successfully');
@@ -158,8 +160,9 @@ class LoanController extends Controller
             'interest' => 'required|numeric',
             'comment' => 'required',
         ]);
+        $loan = Loan::findorfail($id);
         try {
-            $request->merge(['loan_id' => $id]);
+            $request->merge(['loan_id' => $id, 'posted_by' => auth()->user()->id, 'user_id' => $loan->user_id]);
             $last = LoanPay::where('loan_id', $id)->where('status', 'requested')->first();
             if ($last) {
                 return back()->with('error', 'Please wait for last loan to be approved');
@@ -179,13 +182,15 @@ class LoanController extends Controller
             'interest' => 'required|numeric',
             'comment' => 'required',
         ]);
+        $loan = Loan::findorfail($id);
+
         try {
             $last = LoanPay::where('loan_id', $id)->where('status', 'requested')->first();
             if ($last) {
                 return back()->with('error', 'Please wait for last loan to be approved');
             }
 
-            $request->merge(['loan_id' => $id]);
+            $request->merge(['loan_id' => $id, 'posted_by' => auth()->user()->id, 'user_id' => $loan->user_id]);
             LoanPay::create($request->all());
             return back()->with('success', 'Loan Payed Off');
         } catch (\Throwable $th) {
@@ -202,8 +207,9 @@ class LoanController extends Controller
             'interest' => 'required|numeric',
             'comment' => 'required',
         ]);
+        $loan = Loan::findorfail($id);
         try {
-            $request->merge(['loan_id' => $id, 'isPartial' => true]);
+            $request->merge(['loan_id' => $id, 'isPartial' => true, 'posted_by' => auth()->user()->id,'user_id' => $loan->user_id]);
             $last = LoanPay::where('loan_id', $id)->where('status', 'requested')->first();
             if ($last) {
                 return back()->with('error', 'Please wait for last loan to be approved');
@@ -256,7 +262,7 @@ class LoanController extends Controller
             return back()->with('error', 'some thing went wrong');
         }
     }
-    public function reverse(Request $request, $id)
+    public function reverse($id)
     {
         $loanPay = LoanPay::findorfail($id)->delete();
         if ($loanPay) {

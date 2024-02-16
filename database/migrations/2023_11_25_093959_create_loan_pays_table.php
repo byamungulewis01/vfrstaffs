@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->enum('status', ['requested', 'approved', 'rejected'])->default('requested');
             $table->foreignId('loan_id')->constrained()->cascadeOnDelete();
             $table->foreignId('approved_by')->nullable()->constrained('users');
+            $table->foreignId('posted_by')->nullable()->constrained('users');
             $table->timestamps();
         });
     }
