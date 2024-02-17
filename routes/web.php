@@ -26,7 +26,7 @@ use App\Http\Controllers\MemberController;
 Route::group(['middleware' => 'guest'], function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('/', 'index')->name('login');
-        Route::post('/', 'login')->name('login.post');
+        Route::post('/login', 'login')->name('login.post');
         Route::get('/forgot-password', 'forgotPassword')->name('forgotPassword');
         Route::get('/success', 'success')->name('success');
         Route::post('/forgot-password', 'sendResetLinkEmail')->name('sendResetLinkEmail');

@@ -20,6 +20,14 @@ class AuthController extends Controller
         // dd(url()->current());
         return view('auth.login');
     }
+    public function forgotPassword()
+    {
+        return view('auth.forget-password');
+    }
+    public function sendResetLinkEmail()
+    {
+       dd('Her');
+    }
     // login
     public function login(Request $request)
     {
