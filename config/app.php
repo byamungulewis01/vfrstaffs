@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
+$app_url = env('APP_URL');
+
 return [
 
     /*
@@ -55,9 +57,10 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost/vfrstaffs'),
 
-    'asset_url' => env('ASSET_URL','http://localhost/vfrstaffs/public'),
+    'url' => env('APP_URL', $app_url),
+
+    'asset_url' => env('ASSET_URL', $app_url . '/public'),
 
     /*
     |--------------------------------------------------------------------------

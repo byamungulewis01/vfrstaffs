@@ -30,7 +30,7 @@
         <div class="col-sm-6 col-lg-3 d-flex align-items-stretch">
             <div class="card w-100 border-0 zoom-in bg-info-warning shadow">
                 <div class="card-body p-4 fw-semibold fs-3 text-warning">
-                    <h4 class="fw-semibold text-warning">VSA ACCOUNT</h4>
+                    <h4 class="fw-semibold text-warning">ACCOUNT</h4>
                     <p class="mb-2 fs-8">{{ number_format($total_sva) }}</p>
                 </div>
             </div>
